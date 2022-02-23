@@ -251,18 +251,18 @@ const Home = () => {
         </div>
       )}
 
-      {isAuthenticated() && (
+      {isAuthenticated() && userUrls.length > 0 && (
         <div className='mb-5'>
           <Card className='box-shadow'>
             <div className='pt-4'>
               <Result
                 className='mb-2'
                 title={
-                  <Link href={userUrls.length > 0 ? userUrls[0].shortUrl : ''}>
-                    {userUrls.length > 0 ? userUrls[0].shortUrl : ''}
+                  <Link href={userUrls[0].shortUrl}>
+                    {userUrls[0].shortUrl}
                   </Link>
                 }
-                subTitle={userUrls.length > 0 && userUrls[0].originalUrl}
+                subTitle={userUrls[0].originalUrl}
                 extra={[
                   <Button type='primary' key='console' onClick={loginHandler}>
                     Manage Links
