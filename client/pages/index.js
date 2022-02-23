@@ -1,26 +1,17 @@
-import Layout from '../components/Layout';
 import { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import {
-  Alert,
-  Result,
-  Button,
-  Typography,
-  Statistic,
-  Row,
-  Col,
-  Card,
-} from 'antd';
+import { Alert, Result, Button, Typography, Statistic, Row, Col } from 'antd';
 storeUrl;
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { NextUIProvider } from '@nextui-org/react';
-import { Input } from '@nextui-org/react';
+import { Input, Card } from '@nextui-org/react';
 import Link from 'next/link';
 import { index, shorten } from '../actions';
-import { storeUrl, isGuest } from '../actions/localStorage';
+import { storeUrl, isGuest, isAuthenticated } from '../actions/localStorage';
 import Login from './login';
 import Register from './register';
 const { Paragraph, Text } = Typography;
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserUrls } from '../actions/user';
 
 const Home = () => {
   const [state, setState] = useState({
@@ -28,16 +19,14 @@ const Home = () => {
     loading: false,
     error: '',
     shortenedUrl: '',
-    mainurlAlias: '',
-    shorturlAlias: '',
+    mainUrlAlias: '',
+    shortUrlAlias: '',
   });
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.UrlShortenerUser);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
-
-  const loginHandler = () => {
-    setLoginVisible(true);
-    setRegisterVisible(false);
-  };
+  const [userUrls, setUserUrls] = useState([]);
 
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -47,12 +36,36 @@ const Home = () => {
   const { mainUrl, loading, error, shortenedUrl, mainUrlAlias, shortUrlAlias } =
     state;
 
-  const home = () => {
-    const res = index();
+  const loadUrls = async () => {
+    if (isAuthenticated()) {
+      let res = await getUserUrls(isAuthenticated()._id);
+      if (res.data) {
+        setUserUrls(res.data);
+        dispatch({
+          type: 'URLS',
+          payload: res.data,
+        });
+      }
+    }
+  };
+
+  const loginHandler = () => {
+    setLoginVisible(true);
+    setRegisterVisible(false);
   };
 
   useEffect(() => {
-    home();
+    loadUrls();
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (!isAuthenticated() && isGuest()) {
+      setState({
+        ...state,
+        shortUrlAlias: shortUrl,
+        mainUrlAlias: originalUrl,
+      });
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -62,7 +75,6 @@ const Home = () => {
       error: false,
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -83,7 +95,7 @@ const Home = () => {
         });
         setCopy(false);
         setDisable(false);
-        storeUrl(res.data);
+        !isAuthenticated() && storeUrl(res.data);
       }, 1000);
     } catch (error) {
       console.log(error);
@@ -131,7 +143,7 @@ const Home = () => {
         {!loading && (
           <>
             <button
-              class='btn btn-success btn-lg mt-2 rounded-1 shadow-none'
+              class='btn btn-success btn-lg mt-2 rounded-0 shadow-none'
               type='button'
             >
               <i class='fas fa-link'></i> &nbsp; Shorten URL
@@ -141,7 +153,7 @@ const Home = () => {
 
         {loading && (
           <button
-            class='btn btn-success btn-lg mt-2 rounded-1 shadow-none'
+            class='btn btn-success btn-lg mt-2 rounded-0 shadow-none'
             type='button'
             disabled
           >
@@ -158,20 +170,20 @@ const Home = () => {
       <div className='site-statistic-demo-card mt-2'>
         <Row gutter={16}>
           <Col span={12}>
-            <Card>
+            <Card className='box-shadow rounded-3'>
               <Statistic
                 className='d-flex justify-content-between align-items-center'
-                title='Shortened:'
+                title='URLs:'
                 value={428}
                 valueStyle={{ color: '#3f8600' }}
               />
             </Card>
           </Col>
           <Col span={12}>
-            <Card>
+            <Card className='box-shadow rounded-3'>
               <Statistic
                 className='d-flex justify-content-between align-items-center'
-                title='Total users:'
+                title='Users:'
                 value={113}
                 valueStyle={{ color: '#3f8600' }}
               />
@@ -184,87 +196,121 @@ const Home = () => {
 
   const urlList = () => (
     <>
-      {shortUrlAlias || isGuest() ? (
+      {!isAuthenticated() && (
         <div className='mb-5'>
-          <Result
-            className='mb-5'
-            title={
-              <Link href={shortUrlAlias ? shortUrlAlias : shortUrl}>
-                {shortUrlAlias ? shortUrlAlias : shortUrl}
-              </Link>
-            }
-            subTitle={mainUrlAlias ? mainUrlAlias : originalUrl}
-            extra={[
-              <Button type='primary' key='console' onClick={loginHandler}>
-                Manage Links
-              </Button>,
-              <Button key='buy' onClick={handleCopy} disabled={disable}>
-                {!copy ? (
-                  <>
-                    <i class='far fa-copy fa-lg me-1' role='button'></i> Copy
-                    Link
-                  </>
-                ) : (
-                  <>
-                    <i class='far fa-copy fa-lg me-1' role='button'></i> Link
-                    Copied
-                  </>
-                )}
-              </Button>,
-            ]}
-          >
-            <div className='desc'>
-              <Paragraph>
-                <Text
-                  strong
-                  style={{
-                    fontSize: 16,
-                  }}
-                >
-                  Register an account to gain access to extras
-                </Text>
-              </Paragraph>
-              <Paragraph>
-                <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                Shorten as many links as possible.
-              </Paragraph>
-              <Paragraph>
-                <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                Track and customize your links.{' '}
-              </Paragraph>
+          <Card className='box-shadow'>
+            <div className='pt-4'>
+              <Result
+                className='mb-2'
+                title={<Link href={shortUrlAlias}>{shortUrlAlias}</Link>}
+                subTitle={mainUrlAlias}
+                extra={[
+                  <Button type='primary' key='console' onClick={loginHandler}>
+                    Manage Links
+                  </Button>,
+                  <Button key='buy' onClick={handleCopy} disabled={disable}>
+                    {!copy ? (
+                      <>
+                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        Copy Link
+                      </>
+                    ) : (
+                      <>
+                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        Link Copied
+                      </>
+                    )}
+                  </Button>,
+                ]}
+              >
+                <div className='desc'>
+                  <Paragraph>
+                    <Text
+                      strong
+                      style={{
+                        fontSize: 16,
+                      }}
+                    >
+                      Register an account to gain access to extras
+                    </Text>
+                  </Paragraph>
+                  <Paragraph>
+                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                    Shorten as many links as possible.
+                  </Paragraph>
+                  <Paragraph>
+                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                    Track and customize your links.{' '}
+                  </Paragraph>
+                </div>
+              </Result>
             </div>
-          </Result>
 
-          <input type='hidden' value={shortenedUrl} id='shortUrl'></input>
+            <input type='hidden' value={shortenedUrl} id='shortUrl'></input>
+          </Card>
         </div>
-      ) : (
-        ''
+      )}
+
+      {isAuthenticated() && (
+        <div className='mb-5'>
+          <Card className='box-shadow'>
+            <div className='pt-4'>
+              <Result
+                className='mb-2'
+                title={
+                  <Link href={userUrls.length > 0 ? userUrls[0].shortUrl : ''}>
+                    {userUrls.length > 0 ? userUrls[0].shortUrl : ''}
+                  </Link>
+                }
+                subTitle={userUrls.length > 0 && userUrls[0].originalUrl}
+                extra={[
+                  <Button type='primary' key='console' onClick={loginHandler}>
+                    Manage Links
+                  </Button>,
+                  <Button key='buy' onClick={handleCopy} disabled={disable}>
+                    {!copy ? (
+                      <>
+                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        Copy Link
+                      </>
+                    ) : (
+                      <>
+                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        Link Copied
+                      </>
+                    )}
+                  </Button>,
+                ]}
+              />
+            </div>
+
+            <input type='hidden' value={shortenedUrl} id='shortUrl'></input>
+          </Card>
+        </div>
       )}
     </>
   );
 
   return (
-    <NextUIProvider>
-      <Layout>
-        <div className='row mt-5'>
-          <div className='col-md-10 col-lg-6 col-sm-10 mx-auto'>
-            {errorNotice()}
-            {shortenForm()}
-            {urlList()}
-          </div>
+    <>
+      <div className='row mt-5'>
+        <div className='col-md-10 col-lg-6 col-sm-10 mx-auto'>
+          {errorNotice()}
+          {shortenForm()}
+          {urlList()}
         </div>
-        <Login
-          loginVisible={loginVisible}
-          setLoginVisible={setLoginVisible}
-          setRegisterVisible={setRegisterVisible}
-        />
-        <Register
-          registerVisible={registerVisible}
-          setRegisterVisible={setRegisterVisible}
-          setLoginVisible={setLoginVisible}
-        />
-      </Layout>
-    </NextUIProvider>
+      </div>
+      <Login
+        loginVisible={loginVisible}
+        setLoginVisible={setLoginVisible}
+        setRegisterVisible={setRegisterVisible}
+      />
+      <Register
+        registerVisible={registerVisible}
+        setRegisterVisible={setRegisterVisible}
+        setLoginVisible={setLoginVisible}
+      />
+    </>
   );
 };
 

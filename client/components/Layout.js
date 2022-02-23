@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Drawer, Button } from 'antd';
 import Head from 'next/head';
-import Auth from '../pages/auth';
+import Link from 'next/link';
 import Login from '../pages/login';
 import Register from '../pages/register';
-import Home from '../pages/index';
+import { isAuthenticated } from '../actions/localStorage';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
   const [viewMenu, setViewMenu] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
+  const [userDetails, SetUserDetails] = useState(null);
+
+  const userInfo = useSelector((state) => state.UrlShortenerUser);
 
   const loginHandler = () => {
     setLoginVisible(true);
@@ -30,6 +34,12 @@ const Layout = ({ children }) => {
   const onClose = () => {
     setViewMenu(false);
   };
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      SetUserDetails(userInfo);
+    }
+  }, [userInfo]);
 
   const head = () => (
     <>
@@ -105,29 +115,60 @@ const Layout = ({ children }) => {
     <nav class='navbar navbar-dark navbar-expand-sm bg-success nav-shadow'>
       <div class='container'>
         <a href='/' class='navbar-brand'>
-          <i class='fas fa-link'></i> &nbsp; URL Shortener
+          <i class='fas fa-link'></i> URL Shortener
         </a>
         <button
           class='navbar-toggler p-0 border-0 shadow-none me-1'
           type='button'
           onClick={showDrawer}
         >
-          <span>
-            <i class='fa-solid fa-bars fa-lg' style={{ color: '#eeeeee' }}></i>
-          </span>
+          {userDetails == null && (
+            <span>
+              <i class='fa-solid fa-bars fa-lg' style={{ color: '#fff' }}></i>
+            </span>
+          )}
+          {userDetails && (
+            <span>
+              <i
+                class='fa-solid fa-circle-user'
+                style={{ color: '#fff', fontSize: '2.3rem' }}
+              ></i>
+            </span>
+          )}
         </button>
         <div id='navbarCollapse' class='collapse navbar-collapse'>
           <ul class='navbar-nav ms-auto'>
-            <li class='nav-item me-2' onClick={registerHandler}>
-              <span class='nav-link active' role='button'>
-                <i class='fas fa-user-plus'></i> Register
-              </span>
-            </li>
-            <li class='nav-item' onClick={loginHandler}>
-              <span class='nav-link active' role='button'>
-                <i class='fas fa-sign-in-alt'></i> Login
-              </span>
-            </li>
+            <>
+              {!isAuthenticated() && (
+                <>
+                  <li class='nav-item me-2' onClick={registerHandler}>
+                    <span class='nav-link active' role='button'>
+                      <i class='fas fa-user-plus'></i> Register
+                    </span>
+                  </li>
+                  <li class='nav-item' onClick={loginHandler}>
+                    <span class='nav-link active' role='button'>
+                      <i class='fas fa-sign-in-alt'></i> Login
+                    </span>
+                  </li>
+                </>
+              )}
+              {isAuthenticated() && (
+                <li class='nav-item' onClick={loginHandler}>
+                  <Link href='#'>
+                    <div className='user-menu desk'>
+                      {/* <span className='account-text'>My Account</span>{' '} */}
+                      <span>
+                        <i
+                          class='fa-solid fa-circle-user'
+                          style={{ color: '#fff', fontSize: '2.3rem' }}
+                        ></i>
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              )}
+            </>
           </ul>
         </div>
       </div>

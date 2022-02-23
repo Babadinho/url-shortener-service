@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
 body {
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif !important;
-  font-size: 15px !important;
+  font-family: 'Lato', sans-serif !important;
+  font-size: 14px !important;
 }
 .main-container {
   display: flex;
@@ -16,6 +18,22 @@ body {
 }
 .navbar-nav li {
   margin-bottom: 0 !important;
+}
+.user-menu {
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+.user-menu:hover {
+  color: #eee;
+  transition: 0.5s;
+}
+.navbar-toggler:hover {
+  color: #eee;
+  transition: 0.5s;
+}
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 }
 .ant-result-icon {
   display: none !important;
@@ -45,7 +63,7 @@ body {
   margin-bottom: 0 !important;
 }
 .ant-statistic-content-value {
-  font-size: 20px;
+  font-size: 18px;
 }
 #nprogress .bar {
   height: 2px !important;
@@ -147,25 +165,21 @@ body {
 .nav-item-mobile .nav-link {
   color: #198754 !important;
 }
-/* .ant-alert-error {
-  margin: auto;
-  width: 90%;
-} */
 
 @media (max-width: 400px) {
   .ant-statistic-title {
     font-size: 17px;
   }
-  .ant-statistic-content-value {
+  /* .ant-statistic-content-value {
     font-size: 18px;
-  }
+  } */
 }
 
 @media (max-width: 373px) {
   .ant-statistic-title {
     font-size: 16px;
   }
-  .ant-statistic-content-value {
+  /* .ant-statistic-content-value {
     font-size: 17px;
-  }
+  } */
 }
