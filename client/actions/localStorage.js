@@ -87,6 +87,17 @@ export const authenticate = (data) => {
   setLocalStorage('urlshortener', data.user);
 };
 
+// update user localStorage
+export const reAuthenticate = (data) => {
+  if (typeof window !== 'undefined') {
+    if (localStorage.getItem('urlshortener')) {
+      let auth = JSON.parse(localStorage.getItem('urlshortener'));
+      auth = data;
+      localStorage.setItem('urlshortener', JSON.stringify(auth));
+    }
+  }
+};
+
 // access user info from localstorage
 export const isAuthenticated = () => {
   if (process.browser) {
@@ -106,20 +117,3 @@ export const logout = () => {
   removeLocalStorage('isWatched');
   Router.push('/login');
 };
-
-// export const authStoreUrl = (data) => {
-//   if (typeof window !== 'undefined') {
-//     localStorage.setItem('urlshortener', JSON.stringify(data));
-//   }
-// };
-
-// export const isAuthenticated = () => {
-//   if (typeof window == 'undefined') {
-//     return false;
-//   }
-//   if (localStorage.getItem('urlshortener')) {
-//     return JSON.parse(localStorage.getItem('urlshortener'));
-//   } else {
-//     return false;
-//   }
-// };

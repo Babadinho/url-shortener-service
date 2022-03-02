@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Modal, Text } from '@nextui-org/react';
-import { authenticate } from '../actions/localStorage';
+import { authenticate, removeLocalStorage } from '../actions/localStorage';
 import { login } from '../actions/auth';
 import { useDispatch } from 'react-redux';
 
@@ -47,6 +47,7 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
       if (res.data) {
         setUserDetails(res.data);
         authenticate(res.data);
+        removeLocalStorage('shorturl');
         dispatch({
           type: 'USER',
           payload: res.data,

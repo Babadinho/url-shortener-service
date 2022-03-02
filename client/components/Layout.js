@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import { isAuthenticated } from '../actions/localStorage';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
   const [viewMenu, setViewMenu] = useState(false);
@@ -213,7 +213,7 @@ const Layout = ({ children }) => {
           setRegisterVisible={setRegisterVisible}
           setLoginVisible={setLoginVisible}
         />
-        <div className='container main mt-md-3 mt-sm-1'>{children}</div>{' '}
+        <div className='container main mt-md-3 mt-sm-1'>{children}</div>
         {footer()}
       </div>
     </React.Fragment>

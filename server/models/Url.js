@@ -18,6 +18,14 @@ const UrlSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  status: {
+    type: 'string',
+    default: 'public',
+  },
   date: {
     type: String,
     default: Date.now,

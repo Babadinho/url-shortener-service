@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema(
         ref: 'Url',
       },
     ],
+    last_shortened: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Url',
+    },
     role: {
       type: String,
       default: 'user',

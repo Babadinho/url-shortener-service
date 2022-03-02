@@ -3,7 +3,7 @@ const Url = require('../models/Url');
 
 exports.getUser = async (req, res) => {
   let user = await User.findById(req.params.userId)
-    .populate([{ path: 'urls' }])
+    .populate('last_shortened')
     .exec();
   user.password = undefined;
   return res.json(user);

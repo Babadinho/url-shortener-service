@@ -8,7 +8,7 @@ const MyApp = ({ Component, pageProps }) => {
     <Provider store={store}>
       <NextUIProvider>
         <Layout>
-          <Component {...pageProps} />;
+          <Component {...pageProps} />
         </Layout>
       </NextUIProvider>
     </Provider>

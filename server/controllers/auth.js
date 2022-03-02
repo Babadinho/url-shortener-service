@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
     return res.status(400).send('All fields are required');
 
   try {
-    let user = await User.findOne({ email }).exec();
+    let user = await User.findOne({ email }).populate('last_shortened').exec();
     if (!user)
       return res.status(400).send('User with that email does not exist');
 
@@ -82,6 +82,7 @@ exports.login = async (req, res) => {
           role: user.role,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
+          last_shortened: user.last_shortened,
         },
       });
     });

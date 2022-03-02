@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Alert, Result, Button, Typography, Statistic, Row, Col } from 'antd';
-storeUrl;
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Input, Card } from '@nextui-org/react';
 import Link from 'next/link';
-import { index, shorten } from '../actions';
-import { storeUrl, isGuest, isAuthenticated } from '../actions/localStorage';
+import { shortenGuest, shortenUser } from '../actions/shorten';
+import {
+  storeUrl,
+  isGuest,
+  reAuthenticate,
+  isAuthenticated,
+} from '../actions/localStorage';
 import Login from './login';
 import Register from './register';
 const { Paragraph, Text } = Typography;
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserUrls } from '../actions/user';
 
 const Home = () => {
   const [state, setState] = useState({
@@ -26,7 +29,7 @@ const Home = () => {
   const userInfo = useSelector((state) => state.UrlShortenerUser);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
-  const [userUrls, setUserUrls] = useState([]);
+  const [lastShortened, setLastShortened] = useState(null);
 
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -36,27 +39,16 @@ const Home = () => {
   const { mainUrl, loading, error, shortenedUrl, mainUrlAlias, shortUrlAlias } =
     state;
 
-  const loadUrls = async () => {
-    if (isAuthenticated()) {
-      let res = await getUserUrls(isAuthenticated()._id);
-      if (res.data) {
-        setUserUrls(res.data);
-        dispatch({
-          type: 'URLS',
-          payload: res.data,
-        });
-      }
-    }
-  };
-
   const loginHandler = () => {
     setLoginVisible(true);
     setRegisterVisible(false);
   };
 
   useEffect(() => {
-    loadUrls();
-  }, [userInfo]);
+    if (isAuthenticated()) {
+      setLastShortened(isAuthenticated().last_shortened);
+    }
+  }, [shortenedUrl, userInfo]);
 
   useEffect(() => {
     if (!isAuthenticated() && isGuest()) {
@@ -75,31 +67,60 @@ const Home = () => {
       error: false,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const userId = isAuthenticated() && isAuthenticated()._id;
 
     setState({ ...state, loading: true });
 
-    try {
-      const res = await shorten({
-        mainUrl,
-      });
-      setTimeout(() => {
-        setState({
-          ...state,
-          shortenedUrl: res.data.shortUrl,
-          loading: false,
-          mainUrlAlias: res.data.originalUrl,
-          shortUrlAlias: res.data.shortUrl,
-          mainUrl: '',
-        });
-        setCopy(false);
-        setDisable(false);
-        !isAuthenticated() && storeUrl(res.data);
-      }, 1000);
-    } catch (error) {
-      console.log(error);
-      setState({ ...state, error: error.response.data });
+    if (!isAuthenticated()) {
+      try {
+        const res = await shortenGuest({ mainUrl });
+        setTimeout(() => {
+          setState({
+            ...state,
+            shortenedUrl: res.data.shortUrl,
+            loading: false,
+            mainUrlAlias: res.data.originalUrl,
+            shortUrlAlias: res.data.shortUrl,
+            mainUrl: '',
+            error: '',
+          });
+          setCopy(false);
+          setDisable(false);
+          storeUrl(res.data);
+        }, 1000);
+      } catch (error) {
+        setState({ ...state, error: error.response.data });
+      }
+    }
+
+    if (isAuthenticated()) {
+      try {
+        const res = await shortenUser({ mainUrl, userId });
+        setTimeout(() => {
+          setState({
+            ...state,
+            shortenedUrl: res.data.url.shortUrl,
+            loading: false,
+            mainUrlAlias: res.data.url.originalUrl,
+            shortUrlAlias: res.data.url.shortUrl,
+            mainUrl: '',
+            error: '',
+          });
+          reAuthenticate(res.data.user);
+          dispatch({
+            type: 'USER',
+            payload: res.data.user,
+          });
+          setCopy(false);
+          setDisable(false);
+        }, 1000);
+      } catch (error) {
+        console.log(error);
+        setState({ ...state, error: error.response.data });
+      }
     }
   };
 
@@ -196,7 +217,7 @@ const Home = () => {
 
   const urlList = () => (
     <>
-      {!isAuthenticated() && (
+      {!isAuthenticated() && shortUrlAlias && mainUrlAlias && (
         <div className='mb-5'>
           <Card className='box-shadow'>
             <div className='pt-4'>
@@ -251,18 +272,18 @@ const Home = () => {
         </div>
       )}
 
-      {isAuthenticated() && userUrls.length > 0 && (
+      {isAuthenticated() && lastShortened && (
         <div className='mb-5'>
           <Card className='box-shadow'>
             <div className='pt-4'>
               <Result
                 className='mb-2'
                 title={
-                  <Link href={userUrls[0].shortUrl}>
-                    {userUrls[0].shortUrl}
+                  <Link href={lastShortened.shortUrl}>
+                    {lastShortened.shortUrl}
                   </Link>
                 }
-                subTitle={userUrls[0].originalUrl}
+                subTitle={lastShortened.originalUrl}
                 extra={[
                   <Button type='primary' key='console' onClick={loginHandler}>
                     Manage Links
