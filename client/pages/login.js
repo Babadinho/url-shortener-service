@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Modal, Text } from '@nextui-org/react';
-import { authenticate, removeLocalStorage } from '../actions/localStorage';
+import { authenticate, removeLocalStorage } from '../helpers/localStorage';
 import { login } from '../actions/auth';
 import { useDispatch } from 'react-redux';
 
@@ -13,7 +13,6 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
     loading: false,
   });
   const dispatch = useDispatch();
-  const [userDetails, setUserDetails] = useState([]);
 
   const { email, password, error, loading } = state;
 
@@ -45,7 +44,6 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
         password: password,
       });
       if (res.data) {
-        setUserDetails(res.data);
         authenticate(res.data);
         removeLocalStorage('shorturl');
         dispatch({
@@ -109,7 +107,7 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
           />
           <Modal.Footer>
             <button
-              class='btn btn-success form-control shadow-none'
+              class='btn btn-secondary form-control rounded-1 shadow-none'
               type='button'
               onClick={handleSubmit}
               style={{ fontSize: '17px' }}
@@ -129,14 +127,14 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
             <div className='mb-1'>
               <Text size={15} onClick={registerHandler}>
                 Don't have an Account?{' '}
-                <span size={15} role='button' className='text-success'>
+                <span size={15} role='button' className='text-secondary'>
                   Register
                 </span>
               </Text>{' '}
             </div>
             <div>
               <Text size={15} role='button'>
-                <span class='text-success'>Forgot password?</span>
+                <span class='text-secondary'>Forgot password?</span>
               </Text>
             </div>
           </div>

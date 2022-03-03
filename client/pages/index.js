@@ -4,13 +4,13 @@ import { Alert, Result, Button, Typography, Statistic, Row, Col } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Input, Card } from '@nextui-org/react';
 import Link from 'next/link';
-import { shortenGuest, shortenUser } from '../actions/shorten';
+import { getStats, shortenGuest, shortenUser } from '../actions/index';
 import {
   storeUrl,
   isGuest,
   reAuthenticate,
   isAuthenticated,
-} from '../actions/localStorage';
+} from '../helpers/localStorage';
 import Login from './login';
 import Register from './register';
 const { Paragraph, Text } = Typography;
@@ -30,6 +30,7 @@ const Home = () => {
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const [lastShortened, setLastShortened] = useState(null);
+  const [stats, setStats] = useState(null);
 
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -44,7 +45,19 @@ const Home = () => {
     setRegisterVisible(false);
   };
 
+  const loadStats = async () => {
+    const res = await getStats();
+    try {
+      if (res.data) {
+        setStats(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    loadStats();
     if (isAuthenticated()) {
       setLastShortened(isAuthenticated().last_shortened);
     }
@@ -164,7 +177,7 @@ const Home = () => {
         {!loading && (
           <>
             <button
-              class='btn btn-success btn-lg mt-2 rounded-0 shadow-none'
+              class='btn btn-secondary btn-lg mt-2 rounded-1 shadow-none'
               type='button'
             >
               <i class='fas fa-link'></i> &nbsp; Shorten URL
@@ -174,7 +187,7 @@ const Home = () => {
 
         {loading && (
           <button
-            class='btn btn-success btn-lg mt-2 rounded-0 shadow-none'
+            class='btn btn-secondary btn-lg mt-2 rounded-1 shadow-none'
             type='button'
             disabled
           >
@@ -195,8 +208,8 @@ const Home = () => {
               <Statistic
                 className='d-flex justify-content-between align-items-center'
                 title='URLs:'
-                value={428}
-                valueStyle={{ color: '#3f8600' }}
+                value={!stats ? '0' : stats.urls}
+                valueStyle={{ color: '#6c757d' }}
               />
             </Card>
           </Col>
@@ -205,8 +218,8 @@ const Home = () => {
               <Statistic
                 className='d-flex justify-content-between align-items-center'
                 title='Users:'
-                value={113}
-                valueStyle={{ color: '#3f8600' }}
+                value={!stats ? '0' : stats.users}
+                valueStyle={{ color: '#6c757d' }}
               />
             </Card>
           </Col>

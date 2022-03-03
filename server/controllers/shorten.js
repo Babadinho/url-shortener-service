@@ -90,21 +90,11 @@ exports.shortenUser = async (req, res) => {
       newUrl.save();
       user.urls.unshift(newUrl._id);
       user.last_shortened = newUrl._id;
-      console.log(user);
-      user.save();
+      await user.save();
       await user.populate('last_shortened');
       return res.json({
         url: newUrl,
-        user: {
-          _id: user._id,
-          email: user.email,
-          username: user.username,
-          urls: user.urls,
-          role: user.role,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-          last_shortened: user.last_shortened,
-        },
+        user,
       });
     }
   } catch (err) {

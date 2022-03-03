@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { index, redirect } = require('../controllers/index');
+const { redirect, stats } = require('../controllers/index');
 
 // routes
-router.get('/', index);
 router.get('/:urlId', redirect);
+router.post('/stats', stats);
 
 module.exports = router;

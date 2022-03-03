@@ -1,8 +1,6 @@
 const Url = require('../models/Url');
+const User = require('../models/User');
 
-exports.index = (req, res) => {
-  res.send('Welcome to URL Shortener');
-};
 exports.redirect = async (req, res) => {
   console.log(req.params.urlId);
 
@@ -13,6 +11,17 @@ exports.redirect = async (req, res) => {
       url.save();
       return res.redirect(url.originalUrl);
     } else res.status(404).json('Not found');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json('Server Error');
+  }
+};
+
+exports.stats = async (req, res) => {
+  try {
+    const urls = await Url.find().countDocuments();
+    const users = await User.find().countDocuments();
+    return res.json({ urls, users });
   } catch (err) {
     console.log(err);
     res.status(500).json('Server Error');

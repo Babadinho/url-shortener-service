@@ -114,7 +114,7 @@ const Register = ({ registerVisible, setRegisterVisible, setLoginVisible }) => {
           />
           <Modal.Footer>
             <button
-              class='btn btn-success form-control shadow-none'
+              class='btn btn-secondary form-control rounded-1 shadow-none'
               type='button'
               onClick={handleSubmit}
               style={{ fontSize: '17px' }}
@@ -134,7 +134,7 @@ const Register = ({ registerVisible, setRegisterVisible, setLoginVisible }) => {
             <div>
               <Text size={15} onClick={loginHandler}>
                 Already have an Account?{' '}
-                <span size={15} role='button' className='text-success'>
+                <span size={15} role='button' className='text-secondary'>
                   Login
                 </span>
               </Text>{' '}

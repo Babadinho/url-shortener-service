@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Login from '../pages/login';
 import Register from '../pages/register';
-import { isAuthenticated } from '../actions/localStorage';
+import { isAuthenticated } from '../helpers/localStorage';
 import { useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
@@ -112,7 +112,7 @@ const Layout = ({ children }) => {
   };
 
   const nav = () => (
-    <nav class='navbar navbar-dark navbar-expand-sm bg-success nav-shadow'>
+    <nav class='navbar navbar-dark navbar-expand-sm bg-secondary nav-shadow'>
       <div class='container'>
         <a href='/' class='navbar-brand'>
           <i class='fas fa-link'></i> URL Shortener
