@@ -19,7 +19,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.1",
     "morgan": "^1.10.0",
-    "node-url-shortener": "^2.0.1",
     "nodemon": "^2.0.15",
     "short-unique-id": "^4.4.4"
   }
