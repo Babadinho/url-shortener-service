@@ -15,6 +15,7 @@ import Login from './login';
 import Register from './register';
 const { Paragraph, Text } = Typography;
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 
 const Home = () => {
   const [state, setState] = useState({
@@ -24,6 +25,8 @@ const Home = () => {
     shortenedUrl: '',
     mainUrlAlias: '',
     shortUrlAlias: '',
+    urlStatus: '',
+    createdAt: '',
   });
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.UrlShortenerUser);
@@ -35,10 +38,18 @@ const Home = () => {
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
 
-  const { shortUrl, originalUrl } = isGuest();
+  const { shortUrl, originalUrl, status, date } = isGuest();
 
-  const { mainUrl, loading, error, shortenedUrl, mainUrlAlias, shortUrlAlias } =
-    state;
+  const {
+    mainUrl,
+    loading,
+    error,
+    shortenedUrl,
+    mainUrlAlias,
+    shortUrlAlias,
+    urlStatus,
+    createdAt,
+  } = state;
 
   const loginHandler = () => {
     setLoginVisible(true);
@@ -60,6 +71,11 @@ const Home = () => {
     loadStats();
     if (isAuthenticated()) {
       setLastShortened(isAuthenticated().last_shortened);
+      setState({
+        ...state,
+        shortenedUrl: isAuthenticated().last_shortened.shortUrl,
+      });
+      setCopy(false);
     }
   }, [shortenedUrl, userInfo]);
 
@@ -68,8 +84,12 @@ const Home = () => {
       setState({
         ...state,
         shortUrlAlias: shortUrl,
+        shortenedUrl: shortUrl,
         mainUrlAlias: originalUrl,
+        urlStatus: status,
+        createdAt: date,
       });
+      setCopy(false);
     }
   }, []);
 
@@ -97,6 +117,8 @@ const Home = () => {
             loading: false,
             mainUrlAlias: res.data.originalUrl,
             shortUrlAlias: res.data.shortUrl,
+            urlStatus: res.data.status,
+            createdAt: res.data.date,
             mainUrl: '',
             error: '',
           });
@@ -177,7 +199,7 @@ const Home = () => {
         {!loading && (
           <>
             <button
-              class='btn btn-secondary btn-lg mt-2 rounded-1 shadow-none'
+              class='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
               type='button'
             >
               <i class='fas fa-link'></i> &nbsp; Shorten URL
@@ -187,9 +209,10 @@ const Home = () => {
 
         {loading && (
           <button
-            class='btn btn-secondary btn-lg mt-2 rounded-1 shadow-none'
+            class='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
             type='button'
             disabled
+            style={{ background: '007bff' }}
           >
             <div className='d-flex justify-content-center'>
               <span
@@ -238,23 +261,45 @@ const Home = () => {
                 className='mb-2'
                 title={<Link href={shortUrlAlias}>{shortUrlAlias}</Link>}
                 subTitle={mainUrlAlias}
+                subTitle={
+                  <>
+                    <div>{mainUrlAlias}</div>{' '}
+                    <div className='mt-2'>
+                      <span class='badge bg-info text-dark me-2 capitalize'>
+                        {urlStatus &&
+                          urlStatus[0].toUpperCase() +
+                            urlStatus.substring(1)}{' '}
+                        URL
+                      </span>
+                      <span class='badge bg-warning text-dark'>
+                        {moment(createdAt).fromNow()}
+                      </span>
+                    </div>
+                  </>
+                }
                 extra={[
-                  <Button type='primary' key='console' onClick={loginHandler}>
-                    Manage Links
-                  </Button>,
-                  <Button key='buy' onClick={handleCopy} disabled={disable}>
-                    {!copy ? (
-                      <>
-                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
-                        Copy Link
-                      </>
-                    ) : (
-                      <>
-                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
-                        Link Copied
-                      </>
-                    )}
-                  </Button>,
+                  <>
+                    <Button type='primary' key='console' onClick={loginHandler}>
+                      Manage URLs
+                    </Button>
+                    <Button
+                      key='buy'
+                      onClick={handleCopy}
+                      disabled={copy && disable}
+                    >
+                      {!copy ? (
+                        <>
+                          <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                          Copy URL
+                        </>
+                      ) : (
+                        <>
+                          <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                          URL Copied
+                        </>
+                      )}
+                    </Button>
+                  </>,
                 ]}
               >
                 <div className='desc'>
@@ -265,16 +310,20 @@ const Home = () => {
                         fontSize: 16,
                       }}
                     >
-                      Register an account to gain access to extras
+                      Register an account to access the following extras
                     </Text>
                   </Paragraph>
                   <Paragraph>
                     <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                    Shorten as many links as possible.
+                    Shorten as many URLs as possible.
                   </Paragraph>
                   <Paragraph>
                     <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                    Track and customize your links.{' '}
+                    Track and customize your URLs.{' '}
+                  </Paragraph>
+                  <Paragraph>
+                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                    Private URLs.
                   </Paragraph>
                 </div>
               </Result>
@@ -290,18 +339,36 @@ const Home = () => {
           <Card className='box-shadow'>
             <div className='pt-4'>
               <Result
-                className='mb-2'
+                className='mb-4'
                 title={
                   <Link href={lastShortened.shortUrl}>
                     {lastShortened.shortUrl}
                   </Link>
                 }
-                subTitle={lastShortened.originalUrl}
+                subTitle={
+                  <>
+                    <div>{lastShortened.originalUrl}</div>{' '}
+                    <div className='mt-2'>
+                      <span class='badge bg-info text-dark me-2 capitalize'>
+                        {lastShortened.status[0].toUpperCase() +
+                          lastShortened.status.substring(1)}{' '}
+                        URL
+                      </span>
+                      <span class='badge bg-warning text-dark'>
+                        {moment(lastShortened.date).fromNow()}
+                      </span>
+                    </div>
+                  </>
+                }
                 extra={[
                   <Button type='primary' key='console' onClick={loginHandler}>
                     Manage Links
                   </Button>,
-                  <Button key='buy' onClick={handleCopy} disabled={disable}>
+                  <Button
+                    key='buy'
+                    onClick={handleCopy}
+                    disabled={copy && disable}
+                  >
                     {!copy ? (
                       <>
                         <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
@@ -328,7 +395,7 @@ const Home = () => {
   return (
     <>
       <div className='row mt-5'>
-        <div className='col-md-10 col-lg-6 col-sm-10 mx-auto'>
+        <div className='col-md-10 col-lg-7 col-sm-10 col-xs-10 mx-auto'>
           {errorNotice()}
           {shortenForm()}
           {urlList()}

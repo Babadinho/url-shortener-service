@@ -107,14 +107,14 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
           />
           <Modal.Footer>
             <button
-              class='btn btn-secondary form-control rounded-1 shadow-none'
+              class='btn btn-primary form-control rounded-1 shadow-none'
               type='button'
               onClick={handleSubmit}
               style={{ fontSize: '17px' }}
             >
               {loading ? (
                 <span
-                  class='spinner-border spinner-border-md me-2'
+                  class='spinner-border spinner-border-sm me-2'
                   role='status'
                   aria-hidden='true'
                 ></span>
@@ -127,14 +127,14 @@ const Login = ({ loginVisible, setLoginVisible, setRegisterVisible }) => {
             <div className='mb-1'>
               <Text size={15} onClick={registerHandler}>
                 Don't have an Account?{' '}
-                <span size={15} role='button' className='text-secondary'>
+                <span size={15} role='button' className='text-primary'>
                   Register
                 </span>
               </Text>{' '}
             </div>
             <div>
               <Text size={15} role='button'>
-                <span class='text-secondary'>Forgot password?</span>
+                <span class='text-primary'>Forgot password?</span>
               </Text>
             </div>
           </div>
