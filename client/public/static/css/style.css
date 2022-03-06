@@ -31,7 +31,11 @@ body {
   transition: 0.5s;
 }
 .navbar {
-  background: #1131ca !important;
+  /* background: #1131ca !important; */
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#009aee, #005888);
+  background-image: -webkit-linear-gradient(#009aee, #005888);
+  background-image: linear-gradient(#009aee, #005888);
 }
 .navbar-toggler:hover {
   color: #eee;
@@ -158,14 +162,18 @@ body {
   width: 320px !important;
 }
 .ant-drawer-header {
-  background-color: #1131ca !important;
+  /* background-color: #1131ca !important; */
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#009aee, #005888);
+  background-image: -webkit-linear-gradient(#009aee, #005888);
+  background-image: linear-gradient(#009aee, #005888);
   border-radius: 0 !important;
 }
 .ant-drawer-body {
   padding: 20px !important;
 }
 .nav-item-mobile .nav-link {
-  color: #1890ff !important;
+  color: #005888 !important;
 }
 
 @media (max-width: 400px) {
@@ -178,4 +186,36 @@ body {
   .ant-statistic-title {
     font-size: 16px;
   }
+}
+
+.btn-primary {
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#009aee, #005888);
+  background-image: -webkit-linear-gradient(#009aee, #005888);
+  background-image: linear-gradient(#009aee, #005888);
+}
+.btn-primary:hover {
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#0079bb, #005888);
+  background-image: -webkit-linear-gradient(#0079bb, #005888);
+  background-image: linear-gradient(#0079bb, #005888);
+}
+
+.btn-manage {
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#0079bb, #005888);
+  background-image: -webkit-linear-gradient(#0079bb, #005888);
+  background-image: linear-gradient(#0079bb, #005888);
+}
+.btn-manage:hover {
+  border-bottom: 3px #005888 solid;
+  background-image: -moz-linear-gradient(#009aee, #005888);
+  background-image: -webkit-linear-gradient(#009aee, #005888);
+  background-image: linear-gradient(#009aee, #005888);
+}
+.text-primary {
+  color: #009aee !important;
+}
+.text-primary:hover {
+  color: #005888 !important;
 }

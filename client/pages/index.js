@@ -279,7 +279,12 @@ const Home = () => {
                 }
                 extra={[
                   <>
-                    <Button type='primary' key='console' onClick={loginHandler}>
+                    <Button
+                      type='primary'
+                      key='console'
+                      className='btn-manage'
+                      onClick={loginHandler}
+                    >
                       Manage URLs
                     </Button>
                     <Button
