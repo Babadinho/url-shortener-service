@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Button } from 'antd';
+import { Drawer, Avatar } from 'antd';
 import Head from 'next/head';
 import Link from 'next/link';
 import Login from '../pages/login';
@@ -36,8 +36,8 @@ const Layout = ({ children }) => {
   };
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      SetUserDetails(userInfo);
+    if (userInfo) {
+      SetUserDetails(isAuthenticated());
     }
   }, [userInfo]);
 
@@ -129,10 +129,11 @@ const Layout = ({ children }) => {
           )}
           {userDetails && (
             <span>
-              <i
-                class='fa-solid fa-circle-user'
-                style={{ color: '#fff', fontSize: '2.3rem' }}
-              ></i>
+              <Avatar className='' shape='square' size={38}>
+                {isAuthenticated() &&
+                  userDetails != undefined &&
+                  userDetails.username[0].toUpperCase()}
+              </Avatar>
             </span>
           )}
         </button>
@@ -157,12 +158,27 @@ const Layout = ({ children }) => {
                 <li class='nav-item' onClick={loginHandler}>
                   <Link href='#'>
                     <div className='user-menu desk'>
-                      {/* <span className='account-text'>My Account</span>{' '} */}
                       <span>
-                        <i
-                          class='fa-solid fa-circle-user'
-                          style={{ color: '#fff', fontSize: '2.3rem' }}
-                        ></i>
+                        <Avatar
+                          className='avatar-toggle'
+                          shape='square'
+                          // id='navbarDropdown'
+                          // data-toggle='dropdown'
+                          // data-hover='dropdown'
+                          // aria-haspopup='true'
+                          // aria-expanded='false'
+                          size={38}
+                        >
+                          {isAuthenticated() &&
+                            userDetails != undefined &&
+                            userDetails.username[0].toUpperCase()}
+                        </Avatar>
+                        {/* <ul
+                          className='dropdown-menu'
+                          aria-labelledby='navbarDropdown'
+                        >
+                          <li>hshshshs</li>
+                        </ul> */}
                       </span>
                     </div>
                   </Link>
@@ -182,9 +198,6 @@ const Layout = ({ children }) => {
           <p>URL Shortener &copy; 2022 All Rights Reserved</p>
         </div>
         <div class='footer-right'>
-          <a href='#'>
-            <i class='fab fa-facebook'></i>
-          </a>
           <a href='#'>
             <i class='fab fa-twitter'></i>
           </a>

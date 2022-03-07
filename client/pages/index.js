@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import { Alert, Result, Button, Typography, Statistic, Row, Col } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import {
+  Alert,
+  Result,
+  Button,
+  Typography,
+  Statistic,
+  Row,
+  Col,
+  Tag,
+} from 'antd';
+import {
+  CheckCircleOutlined,
+  QuestionCircleOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import { Input, Card } from '@nextui-org/react';
 import Link from 'next/link';
 import { getStats, shortenGuest, shortenUser } from '../actions/index';
@@ -184,18 +197,20 @@ const Home = () => {
   );
 
   const shortenForm = () => (
-    <div className='mb-3'>
-      <Input
-        clearable
-        fullWidth
-        underlined
-        value={mainUrl}
-        shadow={false}
-        labelPlaceholder='Enter Full URL'
-        size='xl'
-        onChange={handleChange}
-      />
-      <div class='d-grid gap-2' onClick={handleSubmit}>
+    <div className='mb-3 row'>
+      <div className='col-lg-8 col-md-7'>
+        <Input
+          clearable
+          fullWidth
+          underlined
+          value={mainUrl}
+          shadow={false}
+          labelPlaceholder='Enter Full URL'
+          size='xl'
+          onChange={handleChange}
+        />
+      </div>
+      <div class='d-grid gap-2 col-lg-4 col-md-5' onClick={handleSubmit}>
         {!loading && (
           <>
             <button
@@ -253,6 +268,57 @@ const Home = () => {
 
   const urlList = () => (
     <>
+      {!isAuthenticated() && !isGuest() && (
+        <div className='mb-5'>
+          <Card className='box-shadow'>
+            <div className='mb-4'>
+              <Result>
+                <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
+                  <div>
+                    <div className='me-lg-5'>
+                      <Paragraph>
+                        <Text
+                          strong
+                          style={{
+                            fontSize: 16,
+                          }}
+                        >
+                          Register an account to access the following features
+                        </Text>
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Shorten unlimited URLs for free.
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Track and customize your URLs.{' '}
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Switch from public to private URLs.
+                      </Paragraph>
+                    </div>
+                    <div className='d-flex'>
+                      <Button
+                        type='primary'
+                        size='large'
+                        className='mt-4 rounded-1'
+                      >
+                        Get Started for Free
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <img src='/images/shorten.png' alt='url-shortener' />
+                  </div>
+                </div>
+              </Result>
+            </div>
+          </Card>
+        </div>
+      )}
+
       {!isAuthenticated() && shortUrlAlias && mainUrlAlias && (
         <div className='mb-5'>
           <Card className='box-shadow'>
@@ -264,16 +330,24 @@ const Home = () => {
                 subTitle={
                   <>
                     <div>{mainUrlAlias}</div>{' '}
-                    <div className='mt-2'>
-                      <span class='badge bg-info text-dark me-2 capitalize'>
-                        {urlStatus &&
-                          urlStatus[0].toUpperCase() +
-                            urlStatus.substring(1)}{' '}
-                        URL
-                      </span>
-                      <span class='badge bg-warning text-dark'>
-                        {moment(createdAt).fromNow()}
-                      </span>
+                    <div className='mt-2 d-flex justify-content-center align-items-center'>
+                      <Tag color='red' style={{ fontSize: '0.7rem' }}>
+                        <div className='d-flex align-items-center'>
+                          <QuestionCircleOutlined className='me-1' />
+                          <span>
+                            {urlStatus &&
+                              urlStatus[0].toUpperCase() +
+                                urlStatus.substring(1)}{' '}
+                            URL
+                          </span>{' '}
+                        </div>
+                      </Tag>
+                      <Tag color='green' style={{ fontSize: '0.7rem' }}>
+                        <div className='d-flex align-items-center'>
+                          <ClockCircleOutlined className='me-1' />
+                          <span> {moment(createdAt).fromNow()}</span>
+                        </div>
+                      </Tag>
                     </div>
                   </>
                 }
@@ -307,29 +381,45 @@ const Home = () => {
                   </>,
                 ]}
               >
-                <div className='desc'>
-                  <Paragraph>
-                    <Text
-                      strong
-                      style={{
-                        fontSize: 16,
-                      }}
-                    >
-                      Register an account to access the following extras
-                    </Text>
-                  </Paragraph>
-                  <Paragraph>
-                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                    Shorten as many URLs as possible.
-                  </Paragraph>
-                  <Paragraph>
-                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                    Track and customize your URLs.{' '}
-                  </Paragraph>
-                  <Paragraph>
-                    <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
-                    Private URLs.
-                  </Paragraph>
+                <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
+                  <div>
+                    <div className='me-lg-5'>
+                      <Paragraph>
+                        <Text
+                          strong
+                          style={{
+                            fontSize: 16,
+                          }}
+                        >
+                          Register an account to access the following features
+                        </Text>
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Shorten unlimited URLs for free.
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Track and customize your URLs.{' '}
+                      </Paragraph>
+                      <Paragraph>
+                        <CheckCircleOutlined className='site-result-demo-error-icon' />{' '}
+                        Switch from public to private URLs.
+                      </Paragraph>
+                    </div>
+                    <div className='d-flex'>
+                      <Button
+                        type='primary'
+                        size='large'
+                        className='mt-4 rounded-1'
+                      >
+                        Get Started for Free
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <img src='/images/shorten.png' alt='url-shortener' />
+                  </div>
                 </div>
               </Result>
             </div>
@@ -353,20 +443,33 @@ const Home = () => {
                 subTitle={
                   <>
                     <div>{lastShortened.originalUrl}</div>{' '}
-                    <div className='mt-2'>
-                      <span class='badge bg-info text-dark me-2 capitalize'>
-                        {lastShortened.status[0].toUpperCase() +
-                          lastShortened.status.substring(1)}{' '}
-                        URL
-                      </span>
-                      <span class='badge bg-warning text-dark'>
-                        {moment(lastShortened.date).fromNow()}
-                      </span>
+                    <div className='mt-2 d-flex justify-content-center align-items-center'>
+                      <Tag color='blue' style={{ fontSize: '0.7rem' }}>
+                        <div className='d-flex align-items-center'>
+                          <QuestionCircleOutlined className='me-1' />
+                          <span>
+                            {lastShortened.status[0].toUpperCase() +
+                              lastShortened.status.substring(1)}{' '}
+                            URL
+                          </span>{' '}
+                        </div>
+                      </Tag>
+                      <Tag color='green' style={{ fontSize: '0.7rem' }}>
+                        <div className='d-flex align-items-center'>
+                          <ClockCircleOutlined className='me-1' />
+                          <span>{moment(lastShortened.date).fromNow()}</span>
+                        </div>
+                      </Tag>
                     </div>
                   </>
                 }
                 extra={[
-                  <Button type='primary' key='console' onClick={loginHandler}>
+                  <Button
+                    type='primary'
+                    key='console'
+                    className='btn-manage'
+                    onClick={loginHandler}
+                  >
                     Manage Links
                   </Button>,
                   <Button
@@ -400,8 +503,10 @@ const Home = () => {
   return (
     <>
       <div className='row mt-5'>
-        <div className='col-md-10 col-lg-7 col-sm-10 col-xs-10 mx-auto'>
-          {errorNotice()}
+        <div className='col-md-10 col-lg-8 col-sm-10 col-xs-10 mx-auto'>
+          <div className='row'>
+            <div className='col-lg-8 col-md-7'>{errorNotice()}</div>
+          </div>
           {shortenForm()}
           {urlList()}
         </div>

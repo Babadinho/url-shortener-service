@@ -9,7 +9,7 @@ exports.shortenGuest = async (req, res) => {
     /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
   let regex = new RegExp(expression);
 
-  if (!mainUrl) return res.status(400).send('URL field is Empty');
+  if (!mainUrl) return res.status(400).send('The URL field is required');
   if (!mainUrl.match(regex)) return res.status(400).send('Enter a valid URL');
 
   let uid = new ShortUniqueId({ length: 7 });
