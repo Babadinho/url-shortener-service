@@ -4,14 +4,20 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Login from '../pages/login';
 import Register from '../pages/register';
-import { isAuthenticated } from '../helpers/localStorage';
+import Router from 'next/router';
+import {
+  isAuthenticated,
+  removeCookie,
+  removeLocalStorage,
+} from '../helpers/localStorage';
 import { useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
   const [viewMenu, setViewMenu] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
-  const [userDetails, SetUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+  const [logoutUser, setLogoutUser] = useState(false);
 
   const userInfo = useSelector((state) => state.UrlShortenerUser);
 
@@ -37,9 +43,17 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     if (userInfo) {
-      SetUserDetails(isAuthenticated());
+      setUserDetails(isAuthenticated());
     }
-  }, [userInfo]);
+  }, [userInfo, logoutUser]);
+
+  const logout = () => {
+    removeCookie('token');
+    removeLocalStorage('url-shortener');
+    setLogoutUser(!logoutUser);
+    setViewMenu(false);
+    Router.push('/');
+  };
 
   const head = () => (
     <>
@@ -54,31 +68,31 @@ const Layout = ({ children }) => {
         rel='stylesheet'
         href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
         integrity='sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=='
-        crossorigin='anonymous'
-        referrerpolicy='no-referrer'
+        crossOrigin='anonymous'
+        referrerPolicy='no-referrer'
       />
       <link
         rel='stylesheet'
         href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css'
         integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3'
-        crossorigin='anonymous'
+        crossOrigin='anonymous'
       />
       <link rel='stylesheet' href='/static/css/style.css' />
       <title>URL Shortener</title>
       <script
         src='https://code.jquery.com/jquery-3.5.1.slim.min.js'
         integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj'
-        crossorigin='anonymous'
+        crossOrigin='anonymous'
       ></script>
       <script
         src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js'
         integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN'
-        crossorigin='anonymous'
+        crossOrigin='anonymous'
       ></script>
       <script
         src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
         integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV'
-        crossorigin='anonymous'
+        crossOrigin='anonymous'
       ></script>
     </>
   );
@@ -92,20 +106,42 @@ const Layout = ({ children }) => {
           onClose={onClose}
           visible={viewMenu}
         >
-          <div>
-            <ul class='navbar-nav ms-auto'>
-              <li class='nav-item-mobile' onClick={registerHandler}>
-                <span class='nav-link active' role='button'>
-                  <i class='fas fa-user-plus'></i> Register
-                </span>
-              </li>
-              <li class='nav-item-mobile' onClick={loginHandler}>
-                <span class='nav-link active' role='button'>
-                  <i class='fas fa-sign-in-alt'></i> Login
-                </span>
-              </li>
-            </ul>
-          </div>
+          {!isAuthenticated() && (
+            <div>
+              <ul class='navbar-nav ms-auto'>
+                <li class='nav-item-mobile' onClick={registerHandler}>
+                  <span class='nav-link active' role='button'>
+                    <i class='fas fa-user-plus me-1'></i> Register
+                  </span>
+                </li>
+                <li class='nav-item-mobile' onClick={loginHandler}>
+                  <span class='nav-link active' role='button'>
+                    <i class='fas fa-sign-in-alt me-1'></i> Login
+                  </span>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {isAuthenticated() && (
+            <div>
+              <ul class='navbar-nav ms-auto'>
+                <li class='nav-item-mobile'>
+                  <Link href='#'>
+                    <span class='nav-link active' role='button'>
+                      <i class='fa-solid fa-user me-1 fa-sm'></i> Dashboard
+                    </span>
+                  </Link>
+                </li>
+                <li class='nav-item-mobile' onClick={logout}>
+                  <span class='nav-link active' role='button'>
+                    <i class='fa-solid fa-right-from-bracket me-1 fa-sm'></i>{' '}
+                    Logout
+                  </span>
+                </li>
+              </ul>
+            </div>
+          )}
         </Drawer>
       </>
     );
@@ -115,7 +151,7 @@ const Layout = ({ children }) => {
     <nav class='navbar navbar-dark navbar-expand-sm bg-secondary nav-shadow'>
       <div class='container'>
         <a href='/' class='navbar-brand'>
-          <i class='fas fa-link'></i> URL Shortener
+          <i class='fa-solid fa-link-slash'></i> URL Shortener
         </a>
         <button
           class='navbar-toggler p-0 border-0 shadow-none me-1'
@@ -155,34 +191,39 @@ const Layout = ({ children }) => {
                 </>
               )}
               {isAuthenticated() && (
-                <li class='nav-item' onClick={loginHandler}>
-                  <Link href='#'>
-                    <div className='user-menu desk'>
-                      <span>
-                        <Avatar
-                          className='avatar-toggle'
-                          shape='square'
-                          // id='navbarDropdown'
-                          // data-toggle='dropdown'
-                          // data-hover='dropdown'
-                          // aria-haspopup='true'
-                          // aria-expanded='false'
-                          size={38}
-                        >
-                          {isAuthenticated() &&
-                            userDetails != undefined &&
-                            userDetails.username[0].toUpperCase()}
-                        </Avatar>
-                        {/* <ul
-                          className='dropdown-menu'
-                          aria-labelledby='navbarDropdown'
-                        >
-                          <li>hshshshs</li>
-                        </ul> */}
-                      </span>
+                <div class='nav-item px-2 dropdown'>
+                  <div className='user-menu desk'>
+                    <div
+                      className='profile'
+                      role='button'
+                      id='navbarDropdown'
+                      data-toggle='dropdown'
+                      aria-haspopup='true'
+                      aria-expanded='false'
+                    >
+                      <Avatar shape='square' size={38}>
+                        {isAuthenticated() &&
+                          userDetails != undefined &&
+                          userDetails.username[0].toUpperCase()}
+                      </Avatar>
                     </div>
-                  </Link>
-                </li>
+                    <div
+                      className='dropdown-menu menu'
+                      aria-labelledby='navbarDropdown'
+                    >
+                      <ul className='ps-0'>
+                        <li>
+                          <i class='fa-solid fa-user me-1 fa-sm'></i>{' '}
+                          <Link href='#'>Dashboard</Link>
+                        </li>
+                        <li>
+                          <i class='fa-solid fa-right-from-bracket me-1 fa-sm'></i>
+                          <a onClick={logout}>Logout</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               )}
             </>
           </ul>
@@ -198,15 +239,15 @@ const Layout = ({ children }) => {
           <p>URL Shortener &copy; 2022 All Rights Reserved</p>
         </div>
         <div class='footer-right'>
-          <a href='#'>
+          <Link href='#'>
             <i class='fab fa-twitter'></i>
-          </a>
-          <a href='#'>
+          </Link>
+          <Link href='#'>
             <i class='fab fa-linkedin'></i>
-          </a>
-          <a href='#'>
+          </Link>
+          <Link href='#'>
             <i class='fab fa-github'></i>
-          </a>
+          </Link>
         </div>
       </footer>
     </>

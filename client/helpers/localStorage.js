@@ -111,9 +111,3 @@ export const isAuthenticated = () => {
     }
   }
 };
-
-export const logout = () => {
-  removeCookie('token');
-  removeLocalStorage('isWatched');
-  Router.push('/login');
-};

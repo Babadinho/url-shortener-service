@@ -15,7 +15,7 @@ import {
   QuestionCircleOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
-import { Input, Card } from '@nextui-org/react';
+import { Input, Card, Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
 import { getStats, shortenGuest, shortenUser } from '../actions/index';
 import {
@@ -333,7 +333,9 @@ const Home = () => {
                     <div className='mt-2 d-flex justify-content-center align-items-center'>
                       <Tag color='red' style={{ fontSize: '0.7rem' }}>
                         <div className='d-flex align-items-center'>
-                          <QuestionCircleOutlined className='me-1' />
+                          <Tooltip content='Shortened by a Public user'>
+                            <QuestionCircleOutlined className='me-1' />
+                          </Tooltip>
                           <span>
                             {urlStatus &&
                               urlStatus[0].toUpperCase() +
@@ -446,7 +448,9 @@ const Home = () => {
                     <div className='mt-2 d-flex justify-content-center align-items-center'>
                       <Tag color='blue' style={{ fontSize: '0.7rem' }}>
                         <div className='d-flex align-items-center'>
-                          <QuestionCircleOutlined className='me-1' />
+                          <Tooltip content='URL is Private to you'>
+                            <QuestionCircleOutlined className='me-1' />
+                          </Tooltip>
                           <span>
                             {lastShortened.status[0].toUpperCase() +
                               lastShortened.status.substring(1)}{' '}
@@ -467,10 +471,10 @@ const Home = () => {
                   <Button
                     type='primary'
                     key='console'
-                    className='btn-manage'
+                    className='btn-manage mb-2'
                     onClick={loginHandler}
                   >
-                    Manage Links
+                    Manage URLs
                   </Button>,
                   <Button
                     key='buy'
@@ -480,17 +484,49 @@ const Home = () => {
                     {!copy ? (
                       <>
                         <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
-                        Copy Link
+                        Copy URL
                       </>
                     ) : (
                       <>
-                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
-                        Link Copied
+                        <i class='far fa-copy fa-lg me-1' role='button'></i> URL
+                        Copied
                       </>
                     )}
                   </Button>,
                 ]}
-              />
+              >
+                <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
+                  <div>
+                    <div className='me-lg-5'>
+                      <Paragraph>
+                        <Text
+                          strong
+                          style={{
+                            fontSize: 16,
+                          }}
+                        >
+                          Customize and Track URLs
+                        </Text>
+                      </Paragraph>
+                      <Paragraph>
+                        Our Free URL shortener offers lots of Premium Features
+                        that give you more opportunities to target your short
+                        link to the right audience and increase your brand
+                        recognition. One of them is a custom alias, or a custom
+                        URL slug in your short link. ANother is the ability to
+                        track the number of visits for your URLs.
+                      </Paragraph>
+                    </div>
+                  </div>
+                  <div>
+                    <img
+                      src='/images/short.png'
+                      alt='url-shortener'
+                      style={{ maxWidth: '220px' }}
+                    />
+                  </div>
+                </div>
+              </Result>
             </div>
 
             <input type='hidden' value={shortenedUrl} id='shortUrl'></input>
