@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import {
-  Alert,
-  Result,
-  Button,
-  Typography,
-  Statistic,
-  Row,
-  Col,
-  Tag,
-} from 'antd';
+import { Alert, Result, Button, Typography, Tag } from 'antd';
 import {
   CheckCircleOutlined,
   QuestionCircleOutlined,
@@ -17,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { Input, Card, Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
-import { getStats, shortenGuest, shortenUser } from '../actions/index';
+import { shortenGuest, shortenUser } from '../actions/index';
 import {
   storeUrl,
   isGuest,
@@ -43,10 +34,10 @@ const Home = () => {
   });
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.UrlShortenerUser);
+  const guestInfo = useSelector((state) => state.UrlShortenerGuest);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const [lastShortened, setLastShortened] = useState(null);
-  const [stats, setStats] = useState(null);
 
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -69,19 +60,11 @@ const Home = () => {
     setRegisterVisible(false);
   };
 
-  const loadStats = async () => {
-    const res = await getStats();
-    try {
-      if (res.data) {
-        setStats(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const registerHandler = () => {
+    setRegisterVisible(true);
   };
 
   useEffect(() => {
-    loadStats();
     if (isAuthenticated()) {
       setLastShortened(isAuthenticated().last_shortened);
       setState({
@@ -104,7 +87,19 @@ const Home = () => {
       });
       setCopy(false);
     }
-  }, []);
+
+    if (!isAuthenticated() && !isGuest()) {
+      setState({
+        ...state,
+        shortUrlAlias: '',
+        shortenedUrl: '',
+        mainUrlAlias: '',
+        urlStatus: '',
+        createdAt: '',
+      });
+      setCopy(false);
+    }
+  }, [guestInfo, userInfo]);
 
   const handleChange = (e) => {
     setState({
@@ -138,6 +133,10 @@ const Home = () => {
           setCopy(false);
           setDisable(false);
           storeUrl(res.data);
+          dispatch({
+            type: 'GUEST',
+            payload: res.data,
+          });
         }, 1000);
       } catch (error) {
         setState({ ...state, error: error.response.data });
@@ -197,7 +196,7 @@ const Home = () => {
   );
 
   const shortenForm = () => (
-    <div className='mb-3 row'>
+    <div className='mb-5 row shorten-form'>
       <div className='col-lg-8 col-md-7'>
         <Input
           clearable
@@ -239,39 +238,15 @@ const Home = () => {
           </button>
         )}
       </div>
-      <div className='site-statistic-demo-card mt-2'>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Card className='box-shadow rounded-3'>
-              <Statistic
-                className='d-flex justify-content-between align-items-center'
-                title='URLs:'
-                value={!stats ? '0' : stats.urls}
-                valueStyle={{ color: '#6c757d' }}
-              />
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card className='box-shadow rounded-3'>
-              <Statistic
-                className='d-flex justify-content-between align-items-center'
-                title='Users:'
-                value={!stats ? '0' : stats.users}
-                valueStyle={{ color: '#6c757d' }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </div>
     </div>
   );
 
   const urlList = () => (
     <>
-      {!isAuthenticated() && !isGuest() && (
+      {!isAuthenticated() && !shortUrlAlias && !mainUrlAlias && (
         <div className='mb-5'>
           <Card className='box-shadow'>
-            <div className='mb-4'>
+            <div className='mb-4 guest-section'>
               <Result>
                 <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
                   <div>
@@ -304,6 +279,7 @@ const Home = () => {
                         type='primary'
                         size='large'
                         className='mt-4 rounded-1'
+                        onClick={registerHandler}
                       >
                         Get Started for Free
                       </Button>
@@ -508,13 +484,16 @@ const Home = () => {
                           Customize and Track URLs
                         </Text>
                       </Paragraph>
-                      <Paragraph>
-                        Our Free URL shortener offers lots of Premium Features
-                        that give you more opportunities to target your short
-                        link to the right audience and increase your brand
-                        recognition. One of them is a custom alias, or a custom
-                        URL slug in your short link. ANother is the ability to
-                        track the number of visits for your URLs.
+                      <Paragraph
+                        style={{ fontSize: '0.94rem', lineHeight: '1.6rem' }}
+                      >
+                        Our free URL shortener includes a number of premium
+                        features that give you more options for targeting your
+                        short link to the right audience and increasing brand
+                        awareness. A custom alias, or a custom URL slug in your
+                        short link, is one of them. Another feature is the
+                        ability to track the number of people who have visited
+                        your URLs.
                       </Paragraph>
                     </div>
                   </div>
@@ -522,7 +501,8 @@ const Home = () => {
                     <img
                       src='/images/short.png'
                       alt='url-shortener'
-                      style={{ maxWidth: '220px' }}
+                      className='image-fluid'
+                      style={{ maxWidth: '340px' }}
                     />
                   </div>
                 </div>
@@ -538,13 +518,28 @@ const Home = () => {
 
   return (
     <>
-      <div className='row mt-5'>
-        <div className='col-md-10 col-lg-8 col-sm-10 col-xs-10 mx-auto'>
-          <div className='row'>
-            <div className='col-lg-8 col-md-7'>{errorNotice()}</div>
+      <section className='section-hero flex-column flex-column-reverse flex-md-row d-flex align-items-center bg-white pt-5'>
+        <div className='header-section'>
+          <h2>We are hiring.</h2>
+          <p>
+            Are you looking for a new challenge? You are passionate about
+            innovation and enjoy working with people? Then you've come to the
+            right place.
+          </p>
+        </div>
+        <div class='image-wrapper'>
+          <img className='img-fluid' src='/images/short-header.png' />
+        </div>
+      </section>
+      <div className=' mt-md-3 mt-sm-1 container'>
+        <div className='row shorten-container'>
+          <div className='col-md-12 col-lg-9 col-sm-10 col-xs-10 mx-auto'>
+            <div className='row'>
+              <div className='col-lg-8 col-md-7'>{errorNotice()}</div>
+            </div>
+            {shortenForm()}
+            {urlList()}
           </div>
-          {shortenForm()}
-          {urlList()}
         </div>
       </div>
       <Login

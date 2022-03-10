@@ -1,15 +1,14 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { authReducer } from './reducers/auth';
-import { userReducer, urlsReducer } from './reducers/user';
+import { userReducer, urlsReducer, guestReducer } from './reducers/user';
 
 const middleware = [thunk];
 
 const reducer = combineReducers({
-  UrlShortenerAuth: authReducer,
   UrlShortenerUser: userReducer,
   UrlShortenerUrls: urlsReducer,
+  UrlShortenerGuest: guestReducer,
 });
 
 let userState = null;

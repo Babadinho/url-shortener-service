@@ -10,14 +10,14 @@ import {
   removeCookie,
   removeLocalStorage,
 } from '../helpers/localStorage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
+  const dispatch = useDispatch();
   const [viewMenu, setViewMenu] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
-  const [logoutUser, setLogoutUser] = useState(false);
 
   const userInfo = useSelector((state) => state.UrlShortenerUser);
 
@@ -42,17 +42,22 @@ const Layout = ({ children }) => {
   };
 
   useEffect(() => {
-    if (userInfo) {
+    if (isAuthenticated()) {
       setUserDetails(isAuthenticated());
     }
-  }, [userInfo, logoutUser]);
+    if (!isAuthenticated()) {
+      setUserDetails(undefined);
+    }
+  }, [userInfo]);
 
   const logout = () => {
     removeCookie('token');
-    removeLocalStorage('url-shortener');
-    setLogoutUser(!logoutUser);
+    removeLocalStorage('urlshortener');
     setViewMenu(false);
     Router.push('/');
+    dispatch({
+      type: 'LOGOUT',
+    });
   };
 
   const head = () => (
@@ -178,7 +183,7 @@ const Layout = ({ children }) => {
             <>
               {!isAuthenticated() && (
                 <>
-                  <li class='nav-item me-2' onClick={registerHandler}>
+                  <li class='nav-item me-3' onClick={registerHandler}>
                     <span class='nav-link active' role='button'>
                       <i class='fas fa-user-plus'></i> Register
                     </span>
@@ -232,6 +237,22 @@ const Layout = ({ children }) => {
     </nav>
   );
 
+  const headerSection = () => (
+    <section className='section-hero flex-column flex-column-reverse flex-md-row d-flex align-items-center bg-white pt-5'>
+      <div className='header-section'>
+        <h2>We are hiring.</h2>
+        <p>
+          Are you looking for a new challenge? You are passionate about
+          innovation and enjoy working with people? Then you've come to the
+          right place.
+        </p>
+      </div>
+      <div class='image-wrapper'>
+        <img className='img-fluid' src='/images/short-header.png' />
+      </div>
+    </section>
+  );
+
   const footer = () => (
     <>
       <footer class='footer-distributed d-md-flex justify-content-between align-items-center'>
@@ -267,7 +288,7 @@ const Layout = ({ children }) => {
           setRegisterVisible={setRegisterVisible}
           setLoginVisible={setLoginVisible}
         />
-        <div className='container main mt-md-3 mt-sm-1'>{children}</div>
+        <div className='main'>{children}</div>
         {footer()}
       </div>
     </React.Fragment>
