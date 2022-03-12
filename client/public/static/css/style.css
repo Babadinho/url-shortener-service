@@ -357,6 +357,25 @@ ul.dropdown-menu {
 .section-hero p {
   font-size: clamp(1rem, 1.5vw, 3rem);
 }
+.section-faq {
+  padding-bottom: 20px;
+}
+.section-faq h2 {
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+.accordion-button {
+  font-size: clamp(1rem, 1.5vw, 1.1rem) !important;
+}
+.accordion-body {
+  font-size: clamp(0.9rem, 1.5vw, 1rem) !important;
+}
+.accordion-button:not(.collapsed) {
+  color: #000000;
+  background-color: #f8f9fa;
+}
 
 .nextui-c-ioOuFC {
   --nextui--inputPlaceholderColor: #333333;

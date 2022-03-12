@@ -18,6 +18,7 @@ import {
 import Login from './login';
 import Register from './register';
 import Header from '../components/Header';
+import Faq from '../components/Faq';
 const { Paragraph, Text } = Typography;
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -245,7 +246,7 @@ const Home = () => {
   const urlList = () => (
     <>
       {!isAuthenticated() && !shortUrlAlias && !mainUrlAlias && (
-        <div className='mb-5'>
+        <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='mb-4 guest-section'>
               <Result>
@@ -297,7 +298,7 @@ const Home = () => {
       )}
 
       {!isAuthenticated() && shortUrlAlias && mainUrlAlias && (
-        <div className='mb-5'>
+        <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='pt-4'>
               <Result
@@ -413,7 +414,7 @@ const Home = () => {
       )}
 
       {isAuthenticated() && lastShortened && (
-        <div className='mb-5'>
+        <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='pt-4'>
               <Result
@@ -535,6 +536,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <Faq />
       <Login
         loginVisible={loginVisible}
         setLoginVisible={setLoginVisible}
