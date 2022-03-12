@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import Router from 'next/router';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 import {
   isAuthenticated,
   removeCookie,
@@ -59,6 +61,10 @@ const Layout = ({ children }) => {
       type: 'LOGOUT',
     });
   };
+
+  Router.onRouteChangeStart = (url) => console.log('start');
+  Router.onRouteChangeComplete = (url) => NProgress.done();
+  Router.onRouteChangeError = (url) => NProgress.done();
 
   const head = () => (
     <>
@@ -132,7 +138,7 @@ const Layout = ({ children }) => {
             <div>
               <ul class='navbar-nav ms-auto'>
                 <li class='nav-item-mobile'>
-                  <Link href='#'>
+                  <Link href='/user/dashboard'>
                     <span class='nav-link active' role='button'>
                       <i class='fa-solid fa-user me-1 fa-sm'></i> Dashboard
                     </span>
@@ -155,9 +161,11 @@ const Layout = ({ children }) => {
   const nav = () => (
     <nav class='navbar navbar-dark navbar-expand-sm bg-secondary nav-shadow'>
       <div class='container'>
-        <a href='/' class='navbar-brand'>
-          <i class='fa-solid fa-link-slash'></i> URL Shortener
-        </a>
+        <Link href='/'>
+          <div className='navbar-brand' role='button'>
+            <i class='fa-solid fa-link-slash'></i> URL Shortener
+          </div>
+        </Link>
         <button
           class='navbar-toggler p-0 border-0 shadow-none me-1'
           type='button'
@@ -219,7 +227,7 @@ const Layout = ({ children }) => {
                       <ul className='ps-0'>
                         <li>
                           <i class='fa-solid fa-user me-1 fa-sm'></i>{' '}
-                          <Link href='#'>Dashboard</Link>
+                          <Link href='/user/dashboard'>Dashboard</Link>
                         </li>
                         <li>
                           <i class='fa-solid fa-right-from-bracket me-1 fa-sm'></i>
@@ -235,22 +243,6 @@ const Layout = ({ children }) => {
         </div>
       </div>
     </nav>
-  );
-
-  const headerSection = () => (
-    <section className='section-hero flex-column flex-column-reverse flex-md-row d-flex align-items-center bg-white pt-5'>
-      <div className='header-section'>
-        <h2>We are hiring.</h2>
-        <p>
-          Are you looking for a new challenge? You are passionate about
-          innovation and enjoy working with people? Then you've come to the
-          right place.
-        </p>
-      </div>
-      <div class='image-wrapper'>
-        <img className='img-fluid' src='/images/short-header.png' />
-      </div>
-    </section>
   );
 
   const footer = () => (

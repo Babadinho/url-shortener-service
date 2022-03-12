@@ -17,6 +17,7 @@ import {
 } from '../helpers/localStorage';
 import Login from './login';
 import Register from './register';
+import Header from '../components/Header';
 const { Paragraph, Text } = Typography;
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -250,12 +251,12 @@ const Home = () => {
               <Result>
                 <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
                   <div>
-                    <div className='me-lg-5'>
+                    <div className='me-lg-5' style={{ fontSize: '0.98rem' }}>
                       <Paragraph>
                         <Text
                           strong
                           style={{
-                            fontSize: 16,
+                            fontSize: 19,
                           }}
                         >
                           Register an account to access the following features
@@ -278,7 +279,7 @@ const Home = () => {
                       <Button
                         type='primary'
                         size='large'
-                        className='mt-4 rounded-1'
+                        className='mt-4 rounded-0'
                         onClick={registerHandler}
                       >
                         Get Started for Free
@@ -301,7 +302,11 @@ const Home = () => {
             <div className='pt-4'>
               <Result
                 className='mb-2'
-                title={<Link href={shortUrlAlias}>{shortUrlAlias}</Link>}
+                title={
+                  <Link href={shortUrlAlias} className='d-flex text-center'>
+                    {shortUrlAlias}
+                  </Link>
+                }
                 subTitle={mainUrlAlias}
                 subTitle={
                   <>
@@ -361,12 +366,12 @@ const Home = () => {
               >
                 <div className='desc flex-column flex-column-reverse flex-xxl-row d-flex align-items-center'>
                   <div>
-                    <div className='me-lg-5'>
+                    <div className='me-lg-5' style={{ fontSize: '0.98rem' }}>
                       <Paragraph>
                         <Text
                           strong
                           style={{
-                            fontSize: 16,
+                            fontSize: 19,
                           }}
                         >
                           Register an account to access the following features
@@ -389,7 +394,7 @@ const Home = () => {
                       <Button
                         type='primary'
                         size='large'
-                        className='mt-4 rounded-1'
+                        className='mt-4 rounded-0'
                       >
                         Get Started for Free
                       </Button>
@@ -478,7 +483,7 @@ const Home = () => {
                         <Text
                           strong
                           style={{
-                            fontSize: 16,
+                            fontSize: 19,
                           }}
                         >
                           Customize and Track URLs
@@ -518,19 +523,7 @@ const Home = () => {
 
   return (
     <>
-      <section className='section-hero flex-column flex-column-reverse flex-md-row d-flex align-items-center bg-white pt-5'>
-        <div className='header-section'>
-          <h2>We are hiring.</h2>
-          <p>
-            Are you looking for a new challenge? You are passionate about
-            innovation and enjoy working with people? Then you've come to the
-            right place.
-          </p>
-        </div>
-        <div class='image-wrapper'>
-          <img className='img-fluid' src='/images/short-header.png' />
-        </div>
-      </section>
+      <Header registerHandler={registerHandler} />
       <div className=' mt-md-3 mt-sm-1 container'>
         <div className='row shorten-container'>
           <div className='col-md-12 col-lg-9 col-sm-10 col-xs-10 mx-auto'>
