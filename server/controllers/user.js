@@ -15,8 +15,7 @@ exports.getUserUrls = async (req, res) => {
       user: req.params.userId,
     })
       .populate('user')
-      .sort({ createdAt: '-1' })
-      // .populate('author category location')
+      .sort({ _id: -1 })
       .exec();
     res.json(urls);
   } catch (err) {
@@ -24,3 +23,16 @@ exports.getUserUrls = async (req, res) => {
     return res.status(500).send('Something went wrong. Try again');
   }
 };
+
+// exports.getUserUrls = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.userId)
+//       .populate('urls')
+//       .sort({ createdAt: '-1' })
+//       .exec();
+//     res.json(user.urls);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).send('Something went wrong. Try again');
+//   }
+// };
