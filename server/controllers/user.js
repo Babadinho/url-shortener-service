@@ -14,6 +14,7 @@ exports.getUserUrls = async (req, res) => {
     const urls = await Url.find({
       user: req.params.userId,
     })
+      .populate('user')
       .sort({ createdAt: '-1' })
       // .populate('author category location')
       .exec();

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import 'antd/dist/antd.css';
 import { Alert, Result, Button, Typography, Tag } from 'antd';
 import {
   CheckCircleOutlined,
@@ -22,6 +21,7 @@ import Faq from '../components/Faq';
 const { Paragraph, Text } = Typography;
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import Router from 'next/router';
 
 const Home = () => {
   const [state, setState] = useState({
@@ -40,6 +40,7 @@ const Home = () => {
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const [lastShortened, setLastShortened] = useState(null);
+  const [user, setUser] = useState(null);
 
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -73,6 +74,7 @@ const Home = () => {
         ...state,
         shortenedUrl: isAuthenticated().last_shortened.shortUrl,
       });
+      setUser(isAuthenticated());
       setCopy(false);
     }
   }, [shortenedUrl, userInfo]);
@@ -87,6 +89,7 @@ const Home = () => {
         urlStatus: status,
         createdAt: date,
       });
+      setUser(undefined);
       setCopy(false);
     }
 
@@ -99,6 +102,7 @@ const Home = () => {
         urlStatus: '',
         createdAt: '',
       });
+      setUser(undefined);
       setCopy(false);
     }
   }, [guestInfo, userInfo]);
@@ -199,40 +203,56 @@ const Home = () => {
 
   const shortenForm = () => (
     <div className='mb-5 row shorten-form'>
-      <div className='col-lg-8 col-md-7'>
-        <Input
-          clearable
-          fullWidth
-          underlined
-          value={mainUrl}
-          shadow={false}
-          labelPlaceholder='Enter Full URL'
-          size='xl'
-          onChange={handleChange}
-        />
-      </div>
-      <div class='d-grid gap-2 col-lg-4 col-md-5' onClick={handleSubmit}>
+      {user && (
+        <div className='col-lg-8 col-md-7'>
+          <Input
+            clearable
+            fullWidth
+            underlined
+            value={mainUrl}
+            shadow={false}
+            labelPlaceholder='Enter Full URL'
+            size='xl'
+            onChange={handleChange}
+          />
+        </div>
+      )}
+      {user === undefined && (
+        <div className='col-lg-8 col-md-7'>
+          <Input
+            clearable
+            fullWidth
+            underlined
+            value={mainUrl}
+            shadow={false}
+            labelPlaceholder='Enter Full URL'
+            size='xl'
+            onChange={handleChange}
+          />
+        </div>
+      )}
+      <div className='d-grid gap-2 col-lg-4 col-md-5' onClick={handleSubmit}>
         {!loading && (
           <>
             <button
-              class='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
+              className='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
               type='button'
             >
-              <i class='fas fa-link'></i> &nbsp; Shorten URL
+              <i className='fas fa-link'></i> &nbsp; Shorten URL
             </button>
           </>
         )}
 
         {loading && (
           <button
-            class='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
+            className='btn btn-primary btn-lg mt-2 rounded-1 shadow-none'
             type='button'
             disabled
             style={{ background: '007bff' }}
           >
             <div className='d-flex justify-content-center'>
               <span
-                class='spinner-border spinner-border-md me-2'
+                className='spinner-border spinner-border-md me-2'
                 role='status'
                 aria-hidden='true'
               ></span>
@@ -245,7 +265,7 @@ const Home = () => {
 
   const urlList = () => (
     <>
-      {!isAuthenticated() && !shortUrlAlias && !mainUrlAlias && (
+      {!user && !shortUrlAlias && !mainUrlAlias && (
         <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='mb-4 guest-section'>
@@ -297,7 +317,7 @@ const Home = () => {
         </div>
       )}
 
-      {!isAuthenticated() && shortUrlAlias && mainUrlAlias && (
+      {!user && shortUrlAlias && mainUrlAlias && (
         <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='pt-4'>
@@ -352,12 +372,18 @@ const Home = () => {
                     >
                       {!copy ? (
                         <>
-                          <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                          <i
+                            className='far fa-copy fa-lg me-1'
+                            role='button'
+                          ></i>{' '}
                           Copy URL
                         </>
                       ) : (
                         <>
-                          <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                          <i
+                            className='far fa-copy fa-lg me-1'
+                            role='button'
+                          ></i>{' '}
                           URL Copied
                         </>
                       )}
@@ -413,7 +439,7 @@ const Home = () => {
         </div>
       )}
 
-      {isAuthenticated() && lastShortened && (
+      {user && lastShortened && (
         <div className='mb-2'>
           <Card className='box-shadow'>
             <div className='pt-4'>
@@ -454,7 +480,7 @@ const Home = () => {
                     type='primary'
                     key='console'
                     className='btn-manage mb-2'
-                    onClick={loginHandler}
+                    onClick={() => Router.push('/user/urls')}
                   >
                     Manage URLs
                   </Button>,
@@ -465,13 +491,13 @@ const Home = () => {
                   >
                     {!copy ? (
                       <>
-                        <i class='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        <i className='far fa-copy fa-lg me-1' role='button'></i>{' '}
                         Copy URL
                       </>
                     ) : (
                       <>
-                        <i class='far fa-copy fa-lg me-1' role='button'></i> URL
-                        Copied
+                        <i className='far fa-copy fa-lg me-1' role='button'></i>{' '}
+                        URL Copied
                       </>
                     )}
                   </Button>,
@@ -524,7 +550,7 @@ const Home = () => {
 
   return (
     <>
-      <Header registerHandler={registerHandler} />
+      <Header registerHandler={registerHandler} user={user} />
       <div className=' mt-md-3 mt-sm-1 container'>
         <div className='row shorten-container'>
           <div className='col-md-12 col-lg-9 col-sm-10 col-xs-10 mx-auto'>

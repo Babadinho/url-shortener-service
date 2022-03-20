@@ -50,11 +50,12 @@ body {
   border-radius: 0px !important;
   /* border: 1px solid #e7e7e7  !important; */
 }
-#nprogress .bar {
-  height: 2px !important;
-  background: green !important;
+.shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+  border-radius: 0px !important;
+  /* border: 1px solid #e7e7e7  !important; */
 }
-.ant-result-icon {
+.nextui-c-gJBdwd .ant-result-icon {
   display: none !important;
 }
 .ant-result {
@@ -260,9 +261,8 @@ ul.dropdown-menu {
 .menu {
   top: 45px;
   right: -20px;
-  padding: 10px 10px;
+  padding: 5px 5px;
   background: #fff;
-  width: 170px;
   box-sizing: 0 5px 25px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   transition: 0.5s !important;
@@ -380,4 +380,22 @@ ul.dropdown-menu {
 .nextui-c-ioOuFC {
   --nextui--inputPlaceholderColor: #333333;
   --nextui--inputBorderColor: #333333;
+}
+.url-details .ant-result-icon {
+  display: none !important;
+}
+.url-details .ant-result-title a {
+  font-size: 2.1rem !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+}
+.url-details .ant-result-title a:hover {
+  color: #005888 !important;
+}
+.ant-card .ant-card-bordered {
+  border: unset !important;
+}
+.urls-main .row > * {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }

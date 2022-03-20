@@ -10,6 +10,9 @@ export const shortenUser = async (mainUrl, userId) =>
     userId
   );
 
+export const redirect = async (urlId) =>
+  await axios.post(`${process.env.NEXT_PUBLIC_API}/${urlId}`);
+
 // export const getUsers = async (users) =>
 //   await axios.get(`${process.env.NEXT_PUBLIC_API}/users`, users);
 

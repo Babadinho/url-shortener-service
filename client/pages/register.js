@@ -67,7 +67,7 @@ const Register = ({ registerVisible, setRegisterVisible, setLoginVisible }) => {
   };
 
   return (
-    <>
+    <div>
       <Modal
         closeButton
         aria-labelledby='modal-title'
@@ -114,14 +114,14 @@ const Register = ({ registerVisible, setRegisterVisible, setLoginVisible }) => {
           />
           <Modal.Footer>
             <button
-              class='btn btn-primary form-control rounded-1 shadow-none'
+              className='btn btn-primary form-control rounded-1 shadow-none'
               type='button'
               onClick={handleSubmit}
               style={{ fontSize: '17px' }}
             >
               {loading ? (
                 <span
-                  class='spinner-border spinner-border-sm me-2'
+                  className='spinner-border spinner-border-sm me-2'
                   role='status'
                   aria-hidden='true'
                 ></span>
@@ -142,7 +142,7 @@ const Register = ({ registerVisible, setRegisterVisible, setLoginVisible }) => {
           </div>
         </Modal.Body>
       </Modal>
-    </>
+    </div>
   );
 };
 
