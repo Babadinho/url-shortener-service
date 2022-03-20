@@ -170,7 +170,7 @@ const Urls = () => {
                   />
                   <div className='d-flex align-items-center'>
                     <span>{item.visits}</span>{' '}
-                    <i class='fas fa-chart-area ms-2'></i>
+                    <i className='fas fa-chart-area ms-2'></i>
                   </div>
                 </List.Item>
               )}
@@ -221,7 +221,7 @@ const Urls = () => {
                           </Tag>
                           <Tag color='green' style={{ fontSize: '0.7rem' }}>
                             <div className='d-flex align-items-center'>
-                              <i class='fas fa-chart-area me-1'></i>
+                              <i className='fas fa-chart-area me-1'></i>
                               <span>Visited {active.visits} times</span>
                             </div>
                           </Tag>
@@ -247,7 +247,8 @@ const Urls = () => {
                         className='mb-2'
                         onClick={() => Router.push('/user/urls')}
                       >
-                        <i class='fa-solid fa-pen-to-square me-2'></i> Edit URL
+                        <i className='fa-solid fa-pen-to-square me-2'></i> Edit
+                        URL
                       </Button>,
                       <Button
                         key='buy'
