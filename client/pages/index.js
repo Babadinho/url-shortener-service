@@ -328,7 +328,6 @@ const Home = () => {
                     {shortUrlAlias}
                   </Link>
                 }
-                subTitle={mainUrlAlias}
                 subTitle={
                   <>
                     <div>{mainUrlAlias}</div>{' '}

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Card, List, Divider, Result, Button, Tag, Alert, Empty } from 'antd';
-import { Input, Tooltip } from '@nextui-org/react';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { Alert } from 'antd';
+import { Input, Modal, useModal, Text } from '@nextui-org/react';
 import { getUserUrls } from '../../actions/user';
 import { isAuthenticated, reAuthenticate } from '../../helpers/localStorage';
-import moment from 'moment';
-import Link from 'next/link';
 import { shortenUser } from '../../actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import withAuth from '../withAuth';
+import UrlDetailsMob from '../../components/UrlDetailsMob';
+import UrlDetails from '../../components/UrlDetails';
+import UrlListMob from '../../components/UrlListMob';
+import UrlList from '../../components/UrlList';
 
 const Urls = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const Urls = () => {
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
   const [user, setUser] = useState(null);
+  const { setVisible, bindings } = useModal();
 
   const [state, setState] = useState({
     mainUrl: '',
@@ -107,6 +109,13 @@ const Urls = () => {
     setCopy(false);
   };
 
+  const handleModal = (item) => {
+    setActive(item);
+    setDisable(false);
+    setVisible(true);
+    setCopy(false);
+  };
+
   const errorNotice = () => (
     <>
       <Alert
@@ -116,186 +125,6 @@ const Urls = () => {
         showIcon
         style={{ visibility: !error && 'hidden' }}
       />
-    </>
-  );
-
-  const urlList = () => (
-    <div className='col-md-5'>
-      {urls && (
-        <div
-          id='scrollableDiv'
-          style={{
-            height: 600,
-            overflow: 'auto',
-            border: '1px solid rgba(140, 140, 140, 0.35)',
-            borderTop: 'none',
-            backgroundColor: '#fff',
-            borderRadius: 'none',
-          }}
-        >
-          <InfiniteScroll
-            dataLength={urls.length}
-            next={loadUserUrls}
-            hasMore={urls.length < urls.length}
-            endMessage={<Divider plain>Shorten more URLs</Divider>}
-            scrollableTarget='scrollableDiv'
-          >
-            <List
-              dataSource={urls}
-              renderItem={(item) => (
-                <List.Item
-                  key={item._id}
-                  role='button'
-                  onClick={() => handleListToggle(item)}
-                  style={{
-                    backgroundColor:
-                      active && active._id === item._id && '#f1f3f4',
-                    marginBottom: 'unset',
-                    borderBottom: '1px solid #d3d4d7',
-                    padding: '1.5rem 2rem 1.5rem',
-                  }}
-                >
-                  <List.Item.Meta
-                    title={
-                      <>
-                        <div className='small'>
-                          {moment(item.date).fromNow()}
-                        </div>{' '}
-                        <div className='fw-bold' style={{ fontSize: '1.2rem' }}>
-                          {item.shortUrl}
-                        </div>
-                      </>
-                    }
-                    description={item.originalUrl}
-                  />
-                  <div className='d-flex align-items-center'>
-                    <span>{item.visits}</span>{' '}
-                    <i className='fas fa-chart-area ms-2'></i>
-                  </div>
-                </List.Item>
-              )}
-            />
-          </InfiniteScroll>
-        </div>
-      )}
-      {!urls && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-    </div>
-  );
-
-  const urlDetails = () => (
-    <>
-      <div
-        className='col-md-7'
-        style={{
-          height: 600,
-          border: '1px solid rgba(140, 140, 140, 0.35)',
-          borderTop: 'none',
-          backgroundColor: '#fff',
-        }}
-      >
-        {active && (
-          <>
-            <div className='mb-2 ant-card'>
-              <Card className='box-shadow'>
-                <div className='url-details pt-5 pb-4'>
-                  <Result
-                    className='mb-4'
-                    title={
-                      <Link href={active.shortUrl}>{active.shortUrl}</Link>
-                    }
-                    subTitle={
-                      <>
-                        <div>{active.originalUrl}</div>{' '}
-                        <div className='mt-2 d-flex justify-content-center align-items-center'>
-                          <Tag color='blue' style={{ fontSize: '0.7rem' }}>
-                            <div className='d-flex align-items-center'>
-                              <Tooltip content='URL is Private to you'>
-                                <QuestionCircleOutlined className='me-1' />
-                              </Tooltip>
-                              <span>
-                                {active.status[0].toUpperCase() +
-                                  active.status.substring(1)}{' '}
-                                URL
-                              </span>{' '}
-                            </div>
-                          </Tag>
-                          <Tag color='green' style={{ fontSize: '0.7rem' }}>
-                            <div className='d-flex align-items-center'>
-                              <i className='fas fa-chart-area me-1'></i>
-                              <span>Visited {active.visits} times</span>
-                            </div>
-                          </Tag>
-                        </div>
-                        <div
-                          className='text-dark mt-3'
-                          style={{ fontSize: '0.9rem' }}
-                        >
-                          <span className='bg-light px-5 py-2'>
-                            {moment(active.date).format('MMMM Do YYYY, h:mm a')}{' '}
-                            by{' '}
-                            <b className='text-capitalize'>
-                              {active.user.username}
-                            </b>
-                          </span>
-                        </div>
-                      </>
-                    }
-                    extra={[
-                      <Button
-                        type='primary'
-                        key='console'
-                        className='mb-2'
-                        onClick={() => Router.push('/user/urls')}
-                      >
-                        <i className='fa-solid fa-pen-to-square me-2'></i> Edit
-                        URL
-                      </Button>,
-                      <Button
-                        key='buy'
-                        onClick={handleCopy}
-                        disabled={copy && disable}
-                      >
-                        {!copy ? (
-                          <>
-                            <i
-                              className='far fa-copy fa-lg me-1'
-                              role='button'
-                            ></i>{' '}
-                            Copy URL
-                          </>
-                        ) : (
-                          <>
-                            <i
-                              className='far fa-copy fa-lg me-1'
-                              role='button'
-                            ></i>{' '}
-                            URL Copied
-                          </>
-                        )}
-                      </Button>,
-                    ]}
-                  ></Result>
-                </div>
-
-                <input
-                  type='hidden'
-                  value={active.shortUrl}
-                  id='shortUrl'
-                ></input>
-              </Card>
-            </div>
-          </>
-        )}
-        {!active && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-        <div className='pt-4' style={{ borderTop: '1px solid #d3d4d7' }}>
-          <div className='col-12 col-md-9 mx-auto'>
-            <div className=''>
-              <div className='col-12 col-md-10 mx-auto'>{errorNotice()}</div>
-            </div>
-            {shortenForm()}
-          </div>
-        </div>
-      </div>
     </>
   );
 
@@ -350,21 +179,69 @@ const Urls = () => {
     </div>
   );
 
+  const mobileUrlDetails = () => {
+    return (
+      <div>
+        <Modal
+          scroll
+          fullScreen
+          className='rounded-0'
+          closeButton
+          aria-labelledby='modal-title'
+          aria-describedby='modal-description'
+          {...bindings}
+        >
+          <Modal.Body>
+            <Text>
+              <UrlDetailsMob
+                active={active}
+                handleCopy={handleCopy}
+                copy={copy}
+                disable={disable}
+                errorNotice={errorNotice}
+                shortenForm={shortenForm}
+              />
+            </Text>
+          </Modal.Body>
+          <Modal.Footer>{shortenForm()}</Modal.Footer>
+        </Modal>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className='container-fluid urls-main'>
         <div className='row'>
-          {urlList()}
-          {urlDetails()}
+          <UrlList
+            urls={urls}
+            active={active}
+            loadUserUrls={loadUserUrls}
+            handleListToggle={handleListToggle}
+          />
+          <UrlListMob
+            urls={urls}
+            active={active}
+            loadUserUrls={loadUserUrls}
+            handleModal={handleModal}
+            shortenForm={shortenForm}
+          />
+          <UrlDetails
+            active={active}
+            handleCopy={handleCopy}
+            copy={copy}
+            disable={disable}
+            errorNotice={errorNotice}
+            shortenForm={shortenForm}
+          />
         </div>
 
         <div className='row'>
-          <div className='col-md-5'></div>
-          <div className='col-md-5'></div>
+          <div className='col-11'>{mobileUrlDetails()}</div>
         </div>
       </div>
     </>
   );
 };
 
-export default Urls;
+export default withAuth(Urls);

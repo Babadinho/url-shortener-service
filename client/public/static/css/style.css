@@ -61,6 +61,10 @@ body {
 .ant-result {
   padding: 0 !important;
 }
+.ant-result-title {
+  display: flex !important;
+  justify-content: center !important;
+}
 .ant-result-title a {
   font-size: 1.6rem !important;
   text-decoration: none !important;
@@ -398,4 +402,7 @@ ul.dropdown-menu {
 .urls-main .row > * {
   padding-right: 0 !important;
   padding-left: 0 !important;
+}
+.ant-result-info .ant-result-icon > .anticon {
+  color: #009aee;
 }
