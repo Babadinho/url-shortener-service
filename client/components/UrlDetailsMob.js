@@ -5,13 +5,14 @@ import Link from 'next/link';
 import moment from 'moment';
 import { QuestionCircleOutlined, SmileOutlined } from '@ant-design/icons';
 
-const MobileUrlDetails = ({
+const UrlDetailsMob = ({
   active,
   handleCopy,
   copy,
   disable,
   errorNotice,
   shortenForm,
+  handleEdit,
 }) => {
   return (
     <>
@@ -77,7 +78,7 @@ const MobileUrlDetails = ({
                         type='primary'
                         key='console'
                         className='mb-2'
-                        onClick={() => Router.push('/user/urls')}
+                        onClick={handleEdit}
                       >
                         <i className='fa-solid fa-pen-to-square me-2'></i> Edit
                         URL
@@ -124,4 +125,4 @@ const MobileUrlDetails = ({
   );
 };
 
-export default MobileUrlDetails;
+export default UrlDetailsMob;

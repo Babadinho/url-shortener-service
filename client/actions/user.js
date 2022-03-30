@@ -10,3 +10,6 @@ export const getUser = async (userId, token) =>
 
 export const getUserUrls = async (userId) =>
   await axios.get(`${process.env.NEXT_PUBLIC_API}/urls/${userId}`);
+
+export const editUrl = async (userId, urlId) =>
+  await axios.post(`${process.env.NEXT_PUBLIC_API}/edit-url`, userId, urlId);

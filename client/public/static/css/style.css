@@ -406,3 +406,10 @@ ul.dropdown-menu {
 .ant-result-info .ant-result-icon > .anticon {
   color: #009aee;
 }
+.url-edit-input .nextui-c-eXOOPO {
+  border-radius: 0 !important;
+}
+.url-edit-input .nextui-c-gieWTI-ceZkzL-isRight-false {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}

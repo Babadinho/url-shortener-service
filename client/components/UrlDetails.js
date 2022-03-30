@@ -3,7 +3,7 @@ import { Card, Result, Button, Tag, Empty } from 'antd';
 import { Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
 import moment from 'moment';
-import { QuestionCircleOutlined, SmileOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const UrlDetails = ({
   active,
@@ -12,6 +12,7 @@ const UrlDetails = ({
   disable,
   errorNotice,
   shortenForm,
+  handleEdit,
 }) => {
   return (
     <>
@@ -76,7 +77,7 @@ const UrlDetails = ({
                         type='primary'
                         key='console'
                         className='mb-2'
-                        onClick={() => Router.push('/user/urls')}
+                        onClick={handleEdit}
                       >
                         <i className='fa-solid fa-pen-to-square me-2'></i> Edit
                         URL

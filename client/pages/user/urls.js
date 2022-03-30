@@ -10,6 +10,7 @@ import UrlDetailsMob from '../../components/UrlDetailsMob';
 import UrlDetails from '../../components/UrlDetails';
 import UrlListMob from '../../components/UrlListMob';
 import UrlList from '../../components/UrlList';
+import UrlEdit from '../../components/UrlEdit';
 
 const Urls = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const Urls = () => {
   const [copy, setCopy] = useState(false);
   const [disable, setDisable] = useState(false);
   const [user, setUser] = useState(null);
+  const [urlEdit, setUrlEdit] = useState(null);
   const { setVisible, bindings } = useModal();
 
   const [state, setState] = useState({
@@ -36,6 +38,11 @@ const Urls = () => {
       mainUrl: e.target.value,
       error: false,
     });
+  };
+
+  const handleEdit = () => {
+    setUrlEdit(true);
+    setVisible(false);
   };
 
   const handleSubmit = async (e) => {
@@ -200,6 +207,7 @@ const Urls = () => {
                 disable={disable}
                 errorNotice={errorNotice}
                 shortenForm={shortenForm}
+                handleEdit={handleEdit}
               />
             </Text>
           </Modal.Body>
@@ -233,6 +241,13 @@ const Urls = () => {
             disable={disable}
             errorNotice={errorNotice}
             shortenForm={shortenForm}
+            handleEdit={handleEdit}
+          />
+          <UrlEdit
+            handleEdit={handleEdit}
+            urlEdit={urlEdit}
+            setUrlEdit={setUrlEdit}
+            active={active}
           />
         </div>
 
