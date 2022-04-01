@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'antd';
+import { Modal, Alert } from 'antd';
 import { Input } from '@nextui-org/react';
 import { isAuthenticated, reAuthenticate } from '../helpers/localStorage';
 import { editUrl } from '../actions/user';
+import { useDispatch } from 'react-redux';
 
 const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
+  const dispatch = useDispatch();
   const [spinner, setSpinner] = useState(false);
-  const [urlID, setURLID] = useState();
+  const [newUrlId, setURLID] = useState();
   const [url, setURL] = useState();
   const [error, setError] = useState();
-  // const url = active && active.shortUrl.indexOf(urlID);
+  // const url = active && active.shortUrl.indexOf(newUrlId);
   // const newUrl = active && active.shortUrl.substring(0, url);
 
   useEffect(() => {
@@ -19,6 +21,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
 
   const handleChange = (e) => {
     setURLID(e.target.value);
+    setError('');
   };
 
   const handleOk = () => {
@@ -36,21 +39,35 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
     setSpinner(true);
 
     try {
-      const res = await editUrl({ urlId: url.urlId, userId, urlID });
+      const res = await editUrl({ urlId: url.urlId, userId, newUrlId });
       setTimeout(() => {
-        setURL(res.data.url);
-        // reAuthenticate(res.data.user);
-        // dispatch({
-        //   type: 'USER',
-        //   payload: res.data.user,
-        // });
-        // setDisable(false);
+        setURL(res.data.url[0]);
+        reAuthenticate(res.data.user[0]);
+        dispatch({
+          type: 'USER',
+          payload: res.data.user[0],
+        });
+        setUrlEdit(false);
+        setSpinner(false);
       }, 1000);
     } catch (error) {
       console.log(error);
-      setError(error.response);
+      setError(error.response.data);
+      setSpinner(false);
     }
   };
+
+  const errorNotice = () => (
+    <>
+      <Alert
+        message={error}
+        type='error'
+        className='mb-3'
+        showIcon
+        style={{ display: !error && 'none' }}
+      />
+    </>
+  );
 
   return (
     <div>
@@ -62,10 +79,12 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
         onCancel={handleCancel}
       >
         <div className='row justify-content-center'>
+          <div>{errorNotice()}</div>
           <div className='col-12 url-edit-input'>
             <Input
               fullWidth
-              value={urlID}
+              clearable
+              value={newUrlId}
               shadow={false}
               size='xl'
               onChange={handleChange}

@@ -25,19 +25,36 @@ exports.getUserUrls = async (req, res) => {
 };
 
 exports.editUrl = async (req, res) => {
-  const { urlId, urlID, userId } = req.body;
+  const { urlId, newUrlId, userId } = req.body;
   const expression = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
   let regex = new RegExp(expression);
 
-  if (!urlID) return res.status(400).send('Field cannot be empty');
-  if (urlID.match(regex)) return res.status(400).send('Invalid characters');
+  if (!newUrlId) return res.status(400).send('Field cannot be empty');
+  if (newUrlId.match(regex))
+    return res.status(400).send('Invalid character(s)');
+  if (newUrlId.length <= 3) return res.status(400).send('URL too short');
+  if (urlId == newUrlId)
+    return res.status(400).send("You havn't made any change to URL");
 
   try {
-    const urls = await Url.find({
+    const url = await Url.findOne({
       urlId: urlId,
+      user: userId,
     });
-    console.log();
-    res.json(urls);
+    if (url) {
+      url.urlId = newUrlId;
+      url.shortUrl = `${process.env.CLIENT_URL}/${newUrlId}`;
+      url.save();
+
+      const user = await User.find({
+        _id: userId,
+      })
+        .select('-password')
+        .populate('last_shortened')
+        .exec();
+
+      res.json({ url, user });
+    }
   } catch (err) {
     console.log(err);
     return res.status(500).send('Something went wrong. Try again');

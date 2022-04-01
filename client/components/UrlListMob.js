@@ -8,10 +8,11 @@ const UrlListMob = ({
   active,
   loadUserUrls,
   handleModal,
+  errorNotice,
   shortenForm,
 }) => {
   return (
-    <div className='col-md-5 d-sm-block d-md-none d-lg-none d-xl-none d-xxl-none'>
+    <div className='col-md-5 d-sm-block d-md-none d-lg-none d-xl-none d-xxl-none bg-white'>
       {urls && (
         <div
           id='scrollableDiv'
@@ -69,7 +70,10 @@ const UrlListMob = ({
           </InfiniteScroll>
         </div>
       )}
-      <div className='mb-2'>{shortenForm()}</div>
+      <div className='pt-2' style={{ borderTop: '1px solid #d3d4d7' }}>
+        <div className='col-11 mx-auto'>{errorNotice()}</div>
+        <div className='mb-2'>{shortenForm()}</div>
+      </div>
       {!urls && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
     </div>
   );

@@ -4,16 +4,18 @@ import { Input, Modal, useModal, Text } from '@nextui-org/react';
 import { getUserUrls } from '../../actions/user';
 import { isAuthenticated, reAuthenticate } from '../../helpers/localStorage';
 import { shortenUser } from '../../actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import withAuth from '../withAuth';
 import UrlDetailsMob from '../../components/UrlDetailsMob';
 import UrlDetails from '../../components/UrlDetails';
 import UrlListMob from '../../components/UrlListMob';
 import UrlList from '../../components/UrlList';
 import UrlEdit from '../../components/UrlEdit';
+import Router from 'next/router';
 
 const Urls = () => {
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.UrlShortenerUser);
   const [loading, setLoading] = useState(false);
   const [urls, setUrls] = useState([]);
   const [active, setActive] = useState();
@@ -96,7 +98,10 @@ const Urls = () => {
   useEffect(() => {
     loadUserUrls();
     setUser(isAuthenticated());
-  }, [data]);
+    if (!isAuthenticated()) {
+      Router.push('/');
+    }
+  }, [data, userInfo]);
 
   const handleCopy = () => {
     setCopy(true);
@@ -232,6 +237,7 @@ const Urls = () => {
             active={active}
             loadUserUrls={loadUserUrls}
             handleModal={handleModal}
+            errorNotice={errorNotice}
             shortenForm={shortenForm}
           />
           <UrlDetails
