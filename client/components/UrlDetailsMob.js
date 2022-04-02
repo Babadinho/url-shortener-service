@@ -65,7 +65,7 @@ const UrlDetailsMob = ({
                           style={{ fontSize: '0.9rem' }}
                         >
                           <span className='bg-light px-3 py-2'>
-                            {moment(active.date).format('MMMM Do YYYY, h:mm a')}{' '}
+                            {moment(active.date).format('DD/MM/YYYY, h:mm a')}{' '}
                             by{' '}
                             <b className='text-capitalize'>
                               {active.user.username}
