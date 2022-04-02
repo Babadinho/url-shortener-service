@@ -13,6 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.5.1",
     "@nextui-org/react": "^1.0.2-beta.3",
     "antd": "^4.18.6",
     "axios": "^0.25.0",

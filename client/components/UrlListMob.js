@@ -2,6 +2,7 @@ import React from 'react';
 import { List, Divider, Empty } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import moment from 'moment';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const UrlListMob = ({
   urls,
@@ -79,9 +80,9 @@ const UrlListMob = ({
                       }
                       description={item.originalUrl}
                     />
-                    <div className='d-flex align-items-center'>
+                    <div className='d-flex'>
                       <span>{item.visits}</span>{' '}
-                      <i className='fas fa-chart-area ms-2'></i>
+                      <BarChartIcon className='ms-1' />
                     </div>
                   </List.Item>
                 )}

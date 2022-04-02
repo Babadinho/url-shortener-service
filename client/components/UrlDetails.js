@@ -4,6 +4,7 @@ import { Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
 import moment from 'moment';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const UrlDetails = ({
   active,
@@ -53,7 +54,7 @@ const UrlDetails = ({
                           </Tag>
                           <Tag color='green' style={{ fontSize: '0.7rem' }}>
                             <div className='d-flex align-items-center'>
-                              <i className='fas fa-chart-area me-1'></i>
+                              <BarChartIcon fontSize='small' />
                               <span>Visited {active.visits} times</span>
                             </div>
                           </Tag>
