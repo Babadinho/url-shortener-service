@@ -31,6 +31,7 @@ const UrlListMob = ({
               className='py-2 px-4'
               style={{
                 background: '#f8f9fa',
+                borderBottom: '1px solid #d3d4d7',
               }}
             >
               <span

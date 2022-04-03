@@ -6,15 +6,7 @@ import moment from 'moment';
 import { QuestionCircleOutlined, SmileOutlined } from '@ant-design/icons';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
-const UrlDetailsMob = ({
-  active,
-  handleCopy,
-  copy,
-  disable,
-  errorNotice,
-  shortenForm,
-  handleEdit,
-}) => {
+const UrlDetailsMob = ({ active, handleCopy, copy, disable, handleEdit }) => {
   return (
     <>
       <div

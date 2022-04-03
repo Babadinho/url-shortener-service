@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Alert } from 'antd';
 import { Input, Modal, useModal, Text } from '@nextui-org/react';
 import { getUserUrls } from '../../actions/user';
-import { isAuthenticated, reAuthenticate } from '../../helpers/localStorage';
+import {
+  isAuthenticated,
+  reAuthenticate,
+  getCookie,
+} from '../../helpers/localStorage';
 import { shortenUser } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import withAuth from '../withAuth';
@@ -48,13 +52,14 @@ const Urls = () => {
   };
 
   const handleSubmit = async (e) => {
+    const token = getCookie('token');
     e.preventDefault();
     const userId = isAuthenticated() && isAuthenticated()._id;
 
     setState({ ...state, spinner: true });
 
     try {
-      const res = await shortenUser({ mainUrl, userId });
+      const res = await shortenUser({ mainUrl, userId }, token);
       setTimeout(() => {
         setState({
           ...state,
@@ -78,12 +83,13 @@ const Urls = () => {
   };
 
   const loadUserUrls = async () => {
+    const token = getCookie('token');
     try {
       if (loading) {
         return;
       }
       setLoading(true);
-      const res = await getUserUrls(isAuthenticated()._id);
+      const res = await getUserUrls(isAuthenticated()._id, token);
       if (res.data) {
         setUrls(res.data);
         setActive(res.data[0]);
@@ -216,7 +222,7 @@ const Urls = () => {
               />
             </Text>
           </Modal.Body>
-          <Modal.Footer>{shortenForm()}</Modal.Footer>
+          {/* <Modal.Footer>{shortenForm()}</Modal.Footer> */}
         </Modal>
       </div>
     );
@@ -250,7 +256,7 @@ const Urls = () => {
             handleEdit={handleEdit}
           />
           <UrlEdit
-            handleEdit={handleEdit}
+            setVisible={setVisible}
             urlEdit={urlEdit}
             setUrlEdit={setUrlEdit}
             active={active}

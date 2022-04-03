@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Alert } from 'antd';
 import { Input } from '@nextui-org/react';
-import { isAuthenticated, reAuthenticate } from '../helpers/localStorage';
+import {
+  isAuthenticated,
+  reAuthenticate,
+  getCookie,
+} from '../helpers/localStorage';
 import { editUrl } from '../actions/user';
 import { useDispatch } from 'react-redux';
 
-const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
+const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
   const dispatch = useDispatch();
   const [spinner, setSpinner] = useState(false);
   const [newUrlId, setURLID] = useState();
@@ -26,20 +30,23 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
 
   const handleOk = () => {
     setUrlEdit(false);
+    setVisible(true);
   };
 
   const handleCancel = () => {
     setUrlEdit(false);
+    setVisible(true);
   };
 
   const handleSubmit = async (e) => {
+    const token = getCookie('token');
     e.preventDefault();
     const userId = isAuthenticated() && isAuthenticated()._id;
 
     setSpinner(true);
 
     try {
-      const res = await editUrl({ urlId: url.urlId, userId, newUrlId });
+      const res = await editUrl({ urlId: url.urlId, userId, newUrlId }, token);
       setTimeout(() => {
         setURL(res.data.url[0]);
         reAuthenticate(res.data.user[0]);
@@ -49,6 +56,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
         });
         setUrlEdit(false);
         setSpinner(false);
+        setVisible(true);
       }, 1000);
     } catch (error) {
       console.log(error);
@@ -70,7 +78,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
   );
 
   return (
-    <div>
+    <div className='container-fluid'>
       <Modal
         title={`Edit '${active && active.shortUrl}'`}
         footer={null}
@@ -83,7 +91,6 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active }) => {
           <div className='col-12 url-edit-input'>
             <Input
               fullWidth
-              clearable
               value={newUrlId}
               shadow={false}
               size='xl'

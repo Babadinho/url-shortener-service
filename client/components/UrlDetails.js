@@ -123,7 +123,7 @@ const UrlDetails = ({
         <div className='pt-4' style={{ borderTop: '1px solid #d3d4d7' }}>
           <div className='col-12 col-md-9 mx-auto'>
             <div className=''>
-              <div className='col-12 col-md-10 mx-auto'>{errorNotice()}</div>
+              <div className='col-md-11 mx-auto'>{errorNotice()}</div>
             </div>
             {shortenForm()}
           </div>

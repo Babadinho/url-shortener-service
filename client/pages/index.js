@@ -13,6 +13,7 @@ import {
   isGuest,
   reAuthenticate,
   isAuthenticated,
+  getCookie,
 } from '../helpers/localStorage';
 import Login from './login';
 import Register from './register';
@@ -150,8 +151,9 @@ const Home = () => {
     }
 
     if (isAuthenticated()) {
+      const token = getCookie('token');
       try {
-        const res = await shortenUser({ mainUrl, userId });
+        const res = await shortenUser({ mainUrl, userId }, token);
         setTimeout(() => {
           setState({
             ...state,
