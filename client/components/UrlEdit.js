@@ -12,30 +12,29 @@ import { useDispatch } from 'react-redux';
 const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
   const dispatch = useDispatch();
   const [spinner, setSpinner] = useState(false);
-  const [newUrlId, setURLID] = useState();
+  const [newUrlId, setNewURLID] = useState();
   const [url, setURL] = useState();
   const [error, setError] = useState();
   // const url = active && active.shortUrl.indexOf(newUrlId);
   // const newUrl = active && active.shortUrl.substring(0, url);
 
   useEffect(() => {
-    setURLID(active && active.urlId);
     setURL(active && active);
   }, [urlEdit]);
 
   const handleChange = (e) => {
-    setURLID(e.target.value);
+    setNewURLID(e.target.value);
     setError('');
   };
 
   const handleOk = () => {
     setUrlEdit(false);
-    setVisible(true);
   };
 
   const handleCancel = () => {
     setUrlEdit(false);
-    setVisible(true);
+    setNewURLID('');
+    setURL('');
   };
 
   const handleSubmit = async (e) => {
@@ -56,7 +55,6 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
         });
         setUrlEdit(false);
         setSpinner(false);
-        setVisible(true);
       }, 1000);
     } catch (error) {
       console.log(error);
@@ -78,7 +76,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
   );
 
   return (
-    <div className='container-fluid'>
+    <div className='container'>
       <Modal
         title={`Edit '${active && active.shortUrl}'`}
         footer={null}
@@ -91,7 +89,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
           <div className='col-12 url-edit-input'>
             <Input
               fullWidth
-              value={newUrlId}
+              value={newUrlId ? newUrlId : active && active.urlId}
               shadow={false}
               size='xl'
               onChange={handleChange}
