@@ -258,6 +258,18 @@ const Layout = ({ children }) => {
       <footer className='footer-distributed d-md-flex justify-content-between align-items-center'>
         <div className='footer-left'>
           <p>URL Shortener &copy; 2022 All Rights Reserved</p>
+          <p>
+            Built with <i class='fa fa-heart text-danger'></i> by{' '}
+            <strong>
+              <a
+                href='https://github.com/Babadinho'
+                target='_blank'
+                className='text-danger'
+              >
+                Babadinho
+              </a>
+            </strong>
+          </p>
         </div>
         <div className='footer-right'>
           <Link href='#'>
