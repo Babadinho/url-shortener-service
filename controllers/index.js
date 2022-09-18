@@ -9,7 +9,7 @@ exports.redirect = async (req, res) => {
     if (url) {
       url.visits++;
       url.save();
-      return res.redirect(301, url.originalUrl);
+      return res.redirect(307, url.originalUrl);
     } else res.status(404).json('Not found');
   } catch (err) {
     console.log(err);

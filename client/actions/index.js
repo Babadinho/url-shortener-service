@@ -16,4 +16,4 @@ export const shortenUser = async ({ mainUrl, userId }, token) =>
   );
 
 export const redirect = async (urlId) =>
-  await axios.post(`${process.env.NEXT_PUBLIC_API}/${urlId}`);
+  await axios.get(`${process.env.NEXT_PUBLIC_API}/${urlId}`);
