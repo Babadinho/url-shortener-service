@@ -2,7 +2,7 @@ const Url = require('../models/Url');
 const User = require('../models/User');
 
 exports.redirect = async (req, res) => {
-  console.log(req.params.urlId);
+  console.log(req.params);
 
   try {
     const url = await Url.findOne({ urlId: req.params.urlId });
