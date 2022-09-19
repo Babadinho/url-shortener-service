@@ -9,12 +9,6 @@ import { redirect } from '../actions';
 import { useRouter } from 'next/router';
 
 const MyApp = ({ Component, pageProps }) => {
-  // const router = useRouter();
-
-  // if (router && router.asPath.length > 1) {
-  //   const res = redirect(router.asPath.substring(1));
-  // }
-
   return (
     <Provider store={store}>
       <NextUIProvider>

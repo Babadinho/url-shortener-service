@@ -22,7 +22,7 @@ exports.shortenGuest = async (req, res) => {
     if (url) {
       res.json(url);
     } else {
-      const shortUrl = `${process.env.CLIENT_URL}/${urlId}`;
+      const shortUrl = `https://url-shortener-v1.vercel.app/${urlId}`;
 
       newUrl = new Url({
         originalUrl: mainUrl,
@@ -76,7 +76,7 @@ exports.shortenUser = async (req, res) => {
         return res.json({ url, user });
       }
     } else {
-      const shortUrl = `${process.env.CLIENT_URL}/${urlId}`;
+      const shortUrl = `https://url-shortener-v1.vercel.app/${urlId}`;
 
       const newUrl = new Url({
         originalUrl: mainUrl,

@@ -8,8 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "start": "nodemon server.js"
   },
   "author": "Babadinho",
   "license": "ISC",
@@ -25,6 +24,5 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
     "short-unique-id": "^4.4.4"
-  },
-  "proxy": "https://url-shortener-v1.vercel.app"
+  }
 }
