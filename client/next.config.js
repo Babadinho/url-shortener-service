@@ -1,9 +1,9 @@
 module.exports = {
   publicRuntimeConfig: {
     APP_NAME: 'URL-Shortener',
-    API: 'https://shorturl-v3.herokuapp.com/api',
-    PRODUCTION: true,
-    DOMAIN: 'https://shorturl-v3.herokuapp.com',
+    API: 'http://localhost:8000/api',
+    PRODUCTION: false,
+    DOMAIN: 'http://localhost:3000',
   },
 };
 
