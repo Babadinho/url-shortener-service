@@ -21,7 +21,7 @@ mongoose
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({ origin: 'https://url-shortener-v1.vercel.app' }));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 
 //route middleware
 fs.readdirSync('./routes').map((routes) =>
