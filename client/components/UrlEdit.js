@@ -93,7 +93,7 @@ const UrlEdit = ({ urlEdit, setUrlEdit, active, setVisible }) => {
               shadow={false}
               size='xl'
               onChange={handleChange}
-              labelLeft='http://localhost:3000/'
+              labelLeft='https://url-shortener-v1.vercel.app/'
             />
           </div>
 
